@@ -1,0 +1,29 @@
+@startuml
+
+class UsersSchema{
+    -userName [PK]: String
+    -password: String
+    -createdAt: Date
+    -active [default=true]: boolean
+}
+
+class CategoriesSchema{
+    -category: String
+    -version: String
+    -commands: Array
+}
+
+class CategoriesSchema
+    note left: commands is embedded
+
+class commands{
+    -command: String
+    -es: String
+    -en: String
+    -owner [id of UsersSchema]: String
+}
+
+CategoriesSchema --|> commands: 1:MANY - Embedded
+UsersSchema -[dashed]-> commands
+
+@enduml
