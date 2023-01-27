@@ -1,2 +1,12 @@
 # Visual Studio Code
 .vscode/
+
+# Node modules
+node_modules/
+
+# Production
+build/
+
+# Enviroments
+.env.development.local
+.env.production.local
