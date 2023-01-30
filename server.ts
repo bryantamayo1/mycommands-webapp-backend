@@ -12,4 +12,5 @@ if(process.env.NODE_ENV === 'development'){
     console.log("[mode] production");
 }
 
-new Server();
+const server = new Server();
+server.execute();
