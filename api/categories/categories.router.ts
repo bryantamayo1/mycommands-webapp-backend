@@ -1,7 +1,7 @@
 import express from 'express';
-import { filter } from './categories.controller';
+import { searchCommands } from './categories.controller';
 const router = express.Router();
 
-router.get("", filter);
+router.get("/:lang", searchCommands);
 
 export {router as categoriesRouter}

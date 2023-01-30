@@ -1,10 +1,11 @@
 import express from 'express';
 import { dbConnection } from '../database/database.config';
 import { categoriesRouter } from '../categories/categories.router';
+import { findFilters } from '../categories/categories.controller';
 
 export class Server{
     app;
-    urlApi = "v1/"
+    urlApi = "/v1"
     constructor(){
         // Server
         this.app = express();
@@ -14,10 +15,6 @@ export class Server{
 
         // Middlewares
         this.middlewares();
-
-        // Run server
-        this.execute();
-
     }
 
     connectDB(){
@@ -25,9 +22,11 @@ export class Server{
     }
 
     middlewares(){
-        this.app.use(this.urlApi + "/filters", categoriesRouter);
+        this.app.use(this.urlApi + "/filters", findFilters);
+        this.app.use(this.urlApi + "/commands", categoriesRouter);
     }
 
+    // Run server
     execute(){
         this.app.listen(process.env.PORT, () => {
             console.log("[server] is listenning on port " + process.env.PORT);
