@@ -2,21 +2,6 @@ import { httpCodes } from "../utils/constants";
 import { CategoriesModel } from "./categories.model";
 
 /**
- * Only return the filters to search
- * @returns Array with filters
- */
-export const findFilters = async(req: any, res: any) => {
-    const found = await CategoriesModel.find();
-
-    const cleanData = found.map(item => ({
-        category: item.category,
-        version: item.version,
-        _id: item._id
-    }));
-    return res.json(cleanData);
-}
-
-/**
  * Find commands by command, lang or meaning. Lang can be in 'en' or 'es'.
  * Having in consideration upper and lower case 
  * Path:

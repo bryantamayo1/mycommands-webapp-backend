@@ -1,7 +1,7 @@
 import express from 'express';
 import { dbConnection } from '../database/database.config';
 import { categoriesRouter } from '../categories/categories.router';
-import { findFilters } from '../categories/categories.controller';
+import { filtersRouter } from '../filters/filters.router';
 
 export class Server{
     app;
@@ -15,6 +15,9 @@ export class Server{
 
         // Middlewares
         this.middlewares();
+
+        // Routes
+        this.routes();
     }
 
     connectDB(){
@@ -22,9 +25,14 @@ export class Server{
     }
 
     middlewares(){
-        this.app.use(this.urlApi + "/filters", findFilters);
+        // Body parser, reading data from body into req.body since FE
+        this.app.use(express.json({ limit: '1kb' }));          // limit request as json
+    }
+            
+    routes(){
+        this.app.use(this.urlApi + "/filters", filtersRouter);
         this.app.use(this.urlApi + "/commands", categoriesRouter);
-
+        
         this.app.all("*", (req, res) => {
             return res.json({
                 msg: "Not found"
