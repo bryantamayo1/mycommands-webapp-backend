@@ -1,4 +1,5 @@
 import { httpCodes } from "../utils/constants";
+import { bodyIsEmpty } from "../utils/utils";
 import { CategoriesModel } from "./categories.model";
 
 /**
@@ -67,4 +68,42 @@ export const searchCommands = async(req: any, res: any) => {
     }  
 
     return res.json(result);
+}
+
+/**
+ * Create command by id of filters
+ */
+export const createCommand = async(req: any, res: any) => {
+    const {id_filter} = req.params;
+    console.log(id_filter);
+    console.log(req.body);
+
+    // Validations
+    if(bodyIsEmpty(req.body)){
+        return res.json({
+            msg: "Debe introducir algún campo"
+        });
+    }
+
+    // Update
+    CategoriesModel.findByIdAndUpdate(id_filter,
+        {
+            $push: {
+                "commands": req.body
+            }
+        },{
+            new: true
+        }, (error, sucess) => {
+            if(error){
+                console.log("My error: ", error)
+            }else{
+                console.log(sucess)
+            }
+        }
+    );
+
+    return res.json({
+        msg: "456"
+    })
+
 }

@@ -29,7 +29,7 @@ const CategoriesSchema = new Schema({
         trim: true
     },
     commands: {
-        type: [CommandsSchema],
+        type: [CommandsSchema], 
         default: []
     }
 }, {
