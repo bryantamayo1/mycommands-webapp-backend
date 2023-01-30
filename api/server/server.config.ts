@@ -24,6 +24,12 @@ export class Server{
     middlewares(){
         this.app.use(this.urlApi + "/filters", findFilters);
         this.app.use(this.urlApi + "/commands", categoriesRouter);
+
+        this.app.all("*", (req, res) => {
+            return res.json({
+                msg: "Not found"
+            });
+        });
     }
 
     // Run server

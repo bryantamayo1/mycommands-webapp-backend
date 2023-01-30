@@ -17,5 +17,8 @@ const CategoriesSchema= new Schema({
     timestamps: true
 });
 
+// Index
+CategoriesSchema.index({ category: 1, version: 1 }, {unique: true});
+
 const CategoriesModel = model("category", CategoriesSchema);
 export {CategoriesModel}
