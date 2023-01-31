@@ -38,8 +38,8 @@ export const searchCommands = async(req: any, res: any) => {
         commands.map( (item: any) => {
             item.commands?.map((element: any) => {
                 // Find by query command or meaning
-                if(element.command.toLowerCase().includes( command.toLowerCase() ) ||
-                element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+                if(element.command.toLowerCase().includes( command?.toLowerCase() ) ||
+                element[lang].toLowerCase().includes( meaning?.toLowerCase() )){
                     result.push({ 
                         command: element.command,
                         [lang]: element[lang]
@@ -56,7 +56,6 @@ export const searchCommands = async(req: any, res: any) => {
         // All in one buffer, is easer to work
         commands.commands?.map((element: any) => {
             // Find by query command or meaning
-            console.log("element: ", element)
             if(element.command.toLowerCase().includes( command.toLowerCase() ) ||
             element[lang].toLowerCase().includes( meaning.toLowerCase() )){
                 result.push({ 
@@ -87,7 +86,10 @@ export const createCommand = async(req: any, res: any) => {
     const found = await CategoriesModel.findByIdAndUpdate(id_filter,
     {
         $push: {
-            "commands": req.body
+            commands: {
+                owner: req.user._id,
+                ...req.body
+            },
         }
     },{
         new: true
@@ -99,7 +101,7 @@ export const createCommand = async(req: any, res: any) => {
     }
 
     return res.json({
-        msg: "456"
+        msg: "createCommand"
     });
 
 }
