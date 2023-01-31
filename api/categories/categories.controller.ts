@@ -1,20 +1,6 @@
 import { httpCodes } from "../utils/constants";
+import { bodyIsEmpty } from "../utils/utils";
 import { CategoriesModel } from "./categories.model";
-
-/**
- * Only return the filters to search
- * @returns Array with filters
- */
-export const findFilters = async(req: any, res: any) => {
-    const found = await CategoriesModel.find();
-
-    const cleanData = found.map(item => ({
-        category: item.category,
-        version: item.version,
-        _id: item._id
-    }));
-    return res.json(cleanData);
-}
 
 /**
  * Find commands by command, lang or meaning. Lang can be in 'en' or 'es'.
@@ -82,4 +68,38 @@ export const searchCommands = async(req: any, res: any) => {
     }  
 
     return res.json(result);
+}
+
+/**
+ * Create command by id of filters
+ */
+export const createCommand = async(req: any, res: any) => {
+    const {id_filter} = req.params;
+
+    // Validations
+    if(bodyIsEmpty(req.body)){
+        return res.json({
+            msg: "Debe introducir algún campo"
+        });
+    }
+
+    // Update
+    const found = await CategoriesModel.findByIdAndUpdate(id_filter,
+    {
+        $push: {
+            "commands": req.body
+        }
+    },{
+        new: true
+    });
+    if(!found){
+        return res.json({
+            msg: "Error"
+        });
+    }
+
+    return res.json({
+        msg: "456"
+    });
+
 }

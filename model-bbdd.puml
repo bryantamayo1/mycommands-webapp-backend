@@ -3,14 +3,17 @@
 class UsersSchema{
     -userName [PK]: String
     -password: String
-    -createdAt: Date
     -active [default=true]: boolean
+    -createdAt: Date
+    -updatedAt: Date
 }
 
 class CategoriesSchema{
     -category: String
     -version: String
     -commands: Array
+    -createdAt: Date
+    -updatedAt: Date
 }
 
 class CategoriesSchema
@@ -21,6 +24,8 @@ class commands{
     -es: String
     -en: String
     -owner [id of UsersSchema]: String
+        -createdAt: Date
+    -updatedAt: Date
 }
 
 CategoriesSchema --|> commands: 1:MANY - Embedded
