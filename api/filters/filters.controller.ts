@@ -31,6 +31,7 @@ export const createFilter = async(req: any, res: any) => {
         });
     }
     const newFilter = await CategoriesModel.create({
+        owner: req.user._id,
         ...req.body,
         commands: []    // By default commands is empty  
     });

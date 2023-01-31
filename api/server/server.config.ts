@@ -2,6 +2,7 @@ import express from 'express';
 import { dbConnection } from '../database/database.config';
 import { categoriesRouter } from '../categories/categories.router';
 import { filtersRouter } from '../filters/filters.router';
+import { userRouter } from '../users/users.router';
 
 export class Server{
     app;
@@ -30,12 +31,13 @@ export class Server{
     }
             
     routes(){
+        this.app.use(this.urlApi + "/users", userRouter);
         this.app.use(this.urlApi + "/filters", filtersRouter);
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         
         this.app.all("*", (req, res) => {
             return res.json({
-                msg: "Not found"
+                msg: "Not found route"
             });
         });
     }

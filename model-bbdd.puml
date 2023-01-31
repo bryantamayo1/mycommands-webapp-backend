@@ -12,6 +12,7 @@ class CategoriesSchema{
     -category: String
     -version: String
     -commands: Array
+    -owner [id of UsersSchema]: String
     -createdAt: Date
     -updatedAt: Date
 }

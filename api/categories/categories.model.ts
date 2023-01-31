@@ -2,30 +2,38 @@ import {Schema, model} from 'mongoose';
 
 const CommandsSchema = new Schema({
     command: {
-        type: 'string',
-        required: [true, "Command is compulsory"]
+        type: String,
+        required: [true, "Command is compulsory"],
+        trim: true
     },
     en: {
-        type: 'string',
+        type: String,
         required: [true, "En is compulsory"],
+        trim: true
     },
     es: {
-        type: 'string',
+        type: String,
         required: [true, "Es is compulsory"],
+        trim: true
     },
+    owner: {
+        type: String,
+        required: true,
+        select: false
+    }
 }, {
     timestamps: true
 });
 
 const CategoriesSchema = new Schema({
     category: {
-        type: 'string',
+        type: String,
         required: [true, "Category is compulsory"],
         maxLength: 100,     // Including 100 characters
         trim: true
     },
     version: {
-        type: 'string',
+        type: String,
         required: [true, "Version is compulsory"],
         maxLength: 100,     // Including 100 characters
         trim: true
@@ -33,6 +41,11 @@ const CategoriesSchema = new Schema({
     commands: {
         type: [CommandsSchema], 
         default: []
+    },
+    owner: {
+        type: String,
+        required: true,
+        select: false
     }
 }, {
     timestamps: true

@@ -10,9 +10,6 @@
     "type": "git",
     "url": "git+https://github.com/bryantamayo1/mycommands-webapp-backend.git"
   },
-  "keywords": [
-    "async"
-  ],
   "author": "Bryan Tamayo <david_bryan34@hotmail.com> (https://es.linkedin.com/in/bryan-tamayo-abad)",
   "license": "MIT",
   "bugs": {
@@ -20,12 +17,16 @@
   },
   "homepage": "https://github.com/bryantamayo1/mycommands-webapp-backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "4.18.2",
     "mongoose": "6.9.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "2.4.2",
     "@types/express": "4.17.16",
+    "@types/jsonwebtoken": "9.0.1",
     "dotenv": "16.0.3",
+    "jsonwebtoken": "9.0.0",
     "nodemon": "2.0.20"
   }
 }
