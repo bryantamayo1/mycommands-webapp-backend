@@ -3,16 +3,18 @@ import {Schema, model} from 'mongoose';
 const CommandsSchema = new Schema({
     command: {
         type: 'string',
-        required: [true, "Command is compulsory"],
+        required: [true, "Command is compulsory"]
     },
     en: {
         type: 'string',
-        required: [true, "Command is compulsory"],
+        required: [true, "En is compulsory"],
     },
     es: {
         type: 'string',
-        required: [true, "Command is compulsory"],
+        required: [true, "Es is compulsory"],
     },
+}, {
+    timestamps: true
 });
 
 const CategoriesSchema = new Schema({

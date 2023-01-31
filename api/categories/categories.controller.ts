@@ -75,8 +75,6 @@ export const searchCommands = async(req: any, res: any) => {
  */
 export const createCommand = async(req: any, res: any) => {
     const {id_filter} = req.params;
-    console.log(id_filter);
-    console.log(req.body);
 
     // Validations
     if(bodyIsEmpty(req.body)){
@@ -86,24 +84,22 @@ export const createCommand = async(req: any, res: any) => {
     }
 
     // Update
-    CategoriesModel.findByIdAndUpdate(id_filter,
-        {
-            $push: {
-                "commands": req.body
-            }
-        },{
-            new: true
-        }, (error, sucess) => {
-            if(error){
-                console.log("My error: ", error)
-            }else{
-                console.log(sucess)
-            }
+    const found = await CategoriesModel.findByIdAndUpdate(id_filter,
+    {
+        $push: {
+            "commands": req.body
         }
-    );
+    },{
+        new: true
+    });
+    if(!found){
+        return res.json({
+            msg: "Error"
+        });
+    }
 
     return res.json({
         msg: "456"
-    })
+    });
 
 }
