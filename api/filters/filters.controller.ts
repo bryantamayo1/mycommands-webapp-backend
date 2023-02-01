@@ -14,7 +14,11 @@ import { httpCodes } from '../utils/constants';
         version: item.version,
         _id: item._id
     }));
-    return res.json(cleanData);
+    return res.json({
+        status: "success",
+        results: cleanData.length,
+        cdata: cleanData
+    });
 }
 
 /**
@@ -26,8 +30,9 @@ import { httpCodes } from '../utils/constants';
 export const createFilter = async(req: any, res: any) => {
     // Validations
     if(bodyIsEmpty(req.body)){
-        return res.json({
-            msg: "Debe introducir algún campo"
+        return res.status(httpCodes.bad_request).json({
+            status: "fail",
+            msg: "Body is empty"
         });
     }
     const newFilter = await CategoriesModel.create({
@@ -37,7 +42,10 @@ export const createFilter = async(req: any, res: any) => {
     });
 
     return res.status(httpCodes.created).json({
-        category: newFilter.category,
-        version: newFilter.version
+        status: "success",
+        data: {
+            category: newFilter.category,
+            version: newFilter.version
+        }
     })
 }

@@ -3,6 +3,7 @@ import { dbConnection } from '../database/database.config';
 import { categoriesRouter } from '../categories/categories.router';
 import { filtersRouter } from '../filters/filters.router';
 import { userRouter } from '../users/users.router';
+import { httpCodes } from '../utils/constants';
 
 export class Server{
     app;
@@ -36,7 +37,8 @@ export class Server{
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         
         this.app.all("*", (req, res) => {
-            return res.json({
+            return res.status(httpCodes.bad_request).json({
+                status: "fail",
                 msg: "Not found route"
             });
         });
