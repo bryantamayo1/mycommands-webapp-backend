@@ -4,6 +4,9 @@ import { categoriesRouter } from '../categories/categories.router';
 import { filtersRouter } from '../filters/filters.router';
 import { userRouter } from '../users/users.router';
 import { httpCodes } from '../utils/constants';
+import { globalErrorHandler } from '../manage-errors/handle-errors';
+import morgan from 'morgan';
+import cors from 'cors';
 
 export class Server{
     app;
@@ -27,8 +30,21 @@ export class Server{
     }
 
     middlewares(){
+        // CORS
+        this.app.use(cors());
+
         // Body parser, reading data from body into req.body since FE
         this.app.use(express.json({ limit: '1kb' }));          // limit request as json
+
+        // Recognize object as string o arrays since FE
+        this.app.use(express.urlencoded({ extended: true, limit: '10kb' })); // limit request as string and buffer
+
+        // Morgan
+        if(process.env.NODE_ENV === 'development') this.app.use(morgan("dev"));
+        
+
+        // Manage errors of Express
+        this.app.use(globalErrorHandler);
     }
             
     routes(){
@@ -36,18 +52,43 @@ export class Server{
         this.app.use(this.urlApi + "/filters", filtersRouter);
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         
+        // Manage any router don't mention before
         this.app.all("*", (req, res) => {
             return res.status(httpCodes.bad_request).json({
                 status: "fail",
-                msg: "Not found route"
+                message: "Not found route"
             });
         });
     }
 
     // Run server
     execute(){
-        this.app.listen(process.env.PORT, () => {
+        const server = this.app.listen(process.env.PORT, () => {
             console.log("[server] is listenning on port " + process.env.PORT);
+        });
+        
+        // Manage error of promises, callbacks, ... that haven't a catch
+        process.on("unhandledRejection", (err: any, origin) => {
+            console.log('[UNHANDLED REJECTION] 💥 Shutting down...');
+            console.log({
+                staus: "error",
+                name: err.name,
+                message: err.message,
+                stack: err.stack,
+                origin: origin
+            });
+            server.close(() => {
+                process.exit(1);
+            });
+        });
+
+        // Close server when we recive a signal SIGTERM
+        process.on('SIGTERM', () => {
+            console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+            server.close(() => {
+                console.log('💥 Process terminated!');
+                process.exit(0); 
+            });
         });
     }
 }

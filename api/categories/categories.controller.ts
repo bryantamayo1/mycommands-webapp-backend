@@ -22,13 +22,13 @@ export const searchCommands = async(req: any, res: any) => {
     if(!category){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Query category is compulsory"
+            message: "Query category is compulsory"
         });
     }
     if(!(lang === "en" || lang === "es")){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Query lan can be 'en' or 'es'"
+            message: "Query lan can be 'en' or 'es'"
         });
     }
     
@@ -105,7 +105,7 @@ export const createCommand = async(req: any, res: any) => {
     if(bodyIsEmpty(req.body)){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Body is empty"
+            message: "Body is empty"
         });
     }
 
@@ -124,7 +124,7 @@ export const createCommand = async(req: any, res: any) => {
     if(!found){
         return res.status(httpCodes.not_found).json({
             status: "fail",
-            msg: "Filter not found"
+            message: "Filter not found"
         });
     }
 

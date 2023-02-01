@@ -3,6 +3,7 @@ import { UsersModel } from "./users.models";
 import { httpCodes } from '../utils/constants';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
+import { AppError } from "../manage-errors/AppError";
 
 export const login = async (req: any, res: any) => {
     const {email, password} = req.body;
@@ -10,7 +11,7 @@ export const login = async (req: any, res: any) => {
     if (!email || !password) {
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Email or password are missing"
+            message: "Email or password are missing"
         });
     }
     
@@ -19,7 +20,7 @@ export const login = async (req: any, res: any) => {
     if(!user || !(await user.checkPassword(password, user.password))) {
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Email or password aren't right"
+            message: "Email or password aren't right"
         });
     }
 
@@ -39,21 +40,18 @@ export const login = async (req: any, res: any) => {
     });
 }
 
-export const register = async (req: any, res: any) => {
+export const register = async (req: any, res: any, next: any) => {
     const {userName, email, password, passwordConfirm} = req.body;
     
     // Validations
     if(bodyIsEmpty(req.body)){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            msg: "Body is empty"
-        });
+        return next(new AppError("Body is empty", httpCodes.bad_request));
     }
 
     // Check password of FE
     if(password !== passwordConfirm){
         return res.status(httpCodes.bad_request).json({
-            msg: "Passwords aren't the same"
+            message: "Passwords aren't the same"
         });
     }
 
@@ -62,7 +60,7 @@ export const register = async (req: any, res: any) => {
     if(userExists.length > 0){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "User or email exists yet"
+            message: "User or email exists yet"
         });
     }
 

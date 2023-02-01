@@ -8,7 +8,6 @@ import { httpCodes } from '../utils/constants';
  */
  export const findFilters = async(req: any, res: any) => {
     const found = await CategoriesModel.find();
-
     const cleanData = found.map(item => ({
         category: item.category,
         version: item.version,
@@ -32,7 +31,7 @@ export const createFilter = async(req: any, res: any) => {
     if(bodyIsEmpty(req.body)){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "Body is empty"
+            message: "Body is empty"
         });
     }
     const newFilter = await CategoriesModel.create({

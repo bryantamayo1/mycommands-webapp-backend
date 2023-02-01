@@ -17,7 +17,7 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
     if(!token){
         return res.status(httpCodes.unauthorized).json({
             status: "fail",
-            msg: "Need to login in application web"
+            message: "Need to login in application web"
         });
     }
 
@@ -29,7 +29,7 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
     if(!currentUser){
         return res.status(httpCodes.bad_request).json({
             status: "fail",
-            msg: "This user doesn't exit yet",
+            message: "This user doesn't exit yet",
         })
     }
 
