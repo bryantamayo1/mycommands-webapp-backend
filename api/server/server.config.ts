@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { dbConnection } from '../database/database.config';
 import { categoriesRouter } from '../categories/categories.router';
 import { filtersRouter } from '../filters/filters.router';
@@ -7,6 +7,7 @@ import { httpCodes } from '../utils/constants';
 import { globalErrorHandler } from '../manage-errors/handle-errors';
 import morgan from 'morgan';
 import cors from 'cors';
+import { AppError } from '../manage-errors/AppError';
 
 export class Server{
     app;
@@ -37,14 +38,10 @@ export class Server{
         this.app.use(express.json({ limit: '1kb' }));          // limit request as json
 
         // Recognize object as string o arrays since FE
-        this.app.use(express.urlencoded({ extended: true, limit: '10kb' })); // limit request as string and buffer
+        this.app.use(express.urlencoded({ extended: true, limit: '1kb' })); // limit request as string and buffer
 
         // Morgan
         if(process.env.NODE_ENV === 'development') this.app.use(morgan("dev"));
-        
-
-        // Manage errors of Express
-        this.app.use(globalErrorHandler);
     }
             
     routes(){
@@ -53,12 +50,13 @@ export class Server{
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         
         // Manage any router don't mention before
-        this.app.all("*", (req, res) => {
-            return res.status(httpCodes.bad_request).json({
-                status: "fail",
-                message: "Not found route"
-            });
+        this.app.all("*", (req, res, next: NextFunction) => {
+            return next(new AppError("Not found route", httpCodes.bad_request));
+
         });
+
+        // Manage errors of Express
+        this.app.use(globalErrorHandler);
     }
 
     // Run server

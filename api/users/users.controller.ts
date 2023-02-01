@@ -1,27 +1,22 @@
-import { bodyIsEmpty } from "../utils/utils";
+import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { UsersModel } from "./users.models";
 import { httpCodes } from '../utils/constants';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { AppError } from "../manage-errors/AppError";
+import { NextFunction } from "express";
 
-export const login = async (req: any, res: any) => {
+export const login = catchAsync(async (req: any, res: any, next: NextFunction) => {
     const {email, password} = req.body;
     // 1) Check if email and password exist
     if (!email || !password) {
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            message: "Email or password are missing"
-        });
+        return next(new AppError("Email or password are missing", httpCodes.bad_request));
     }
     
     // 2) Check if user exists && password are corrects
     const user = await UsersModel.findOne({ email }).select("+password -createdAt -updatedAt");
     if(!user || !(await user.checkPassword(password, user.password))) {
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            message: "Email or password aren't right"
-        });
+        return next(new AppError("Email or password aren't right", httpCodes.bad_request));
     }
 
     // 3) Create token
@@ -38,9 +33,9 @@ export const login = async (req: any, res: any) => {
             xen: token
         }
     });
-}
+});
 
-export const register = async (req: any, res: any, next: any) => {
+export const register = catchAsync(async(req: any, res: any, next: any) => {
     const {userName, email, password, passwordConfirm} = req.body;
     
     // Validations
@@ -50,18 +45,13 @@ export const register = async (req: any, res: any, next: any) => {
 
     // Check password of FE
     if(password !== passwordConfirm){
-        return res.status(httpCodes.bad_request).json({
-            message: "Passwords aren't the same"
-        });
+        return next(new AppError("Passwords aren't the same", httpCodes.bad_request));
     }
 
     // Find email or userName exists already on BE
     const userExists = await UsersModel.find({ $or: [{userName}, {email}] });
     if(userExists.length > 0){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            message: "User or email exists yet"
-        });
+        return next(new AppError("User or email exists yet", httpCodes.bad_request));
     }
 
     // Create new user
@@ -74,4 +64,4 @@ export const register = async (req: any, res: any, next: any) => {
     return res.status(httpCodes.created).json({
         status: "success",
     });
-}
+});

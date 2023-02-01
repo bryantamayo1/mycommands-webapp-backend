@@ -1,6 +1,7 @@
 import { Response, NextFunction } from "express";
 import jwt from 'jsonwebtoken';
 import { promisify } from 'util';
+import { AppError } from "../manage-errors/AppError";
 import { UsersModel } from "../users/users.models";
 import { httpCodes } from '../utils/constants';
 
@@ -15,10 +16,7 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
     }
 
     if(!token){
-        return res.status(httpCodes.unauthorized).json({
-            status: "fail",
-            message: "Need to login in application web"
-        });
+        return next(new AppError("Need to login in application web", httpCodes.unauthorized));
     }
 
     // 2) Verification token
@@ -27,10 +25,7 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
     // @ts-ignore
     const currentUser = await UsersModel.findById(decoded.id);
     if(!currentUser){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            message: "This user doesn't exit yet",
-        })
+        return next(new AppError("This user doesn't exit yet", httpCodes.bad_request));
     }
 
     req.user = currentUser

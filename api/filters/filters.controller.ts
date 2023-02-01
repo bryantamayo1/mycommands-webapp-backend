@@ -1,12 +1,14 @@
 import { CategoriesModel } from "../categories/categories.model";
-import { bodyIsEmpty } from "../utils/utils";
+import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { httpCodes } from '../utils/constants';
+import { NextFunction } from "express";
+import { AppError } from "../manage-errors/AppError";
 
 /**
  * Only return the filters to search
  * @returns Array with filters
  */
- export const findFilters = async(req: any, res: any) => {
+ export const findFilters = catchAsync(async(req: any, res: any) => {
     const found = await CategoriesModel.find();
     const cleanData = found.map(item => ({
         category: item.category,
@@ -18,7 +20,7 @@ import { httpCodes } from '../utils/constants';
         results: cleanData.length,
         cdata: cleanData
     });
-}
+});
 
 /**
  * 
@@ -26,13 +28,10 @@ import { httpCodes } from '../utils/constants';
  * @param res 
  * @returns 
  */
-export const createFilter = async(req: any, res: any) => {
+export const createFilter = catchAsync(async(req: any, res: any, next: NextFunction) => {
     // Validations
     if(bodyIsEmpty(req.body)){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            message: "Body is empty"
-        });
+        return next(new AppError("Body is empty", httpCodes.bad_request));
     }
     const newFilter = await CategoriesModel.create({
         owner: req.user._id,
@@ -47,4 +46,4 @@ export const createFilter = async(req: any, res: any) => {
             version: newFilter.version
         }
     })
-}
+});
