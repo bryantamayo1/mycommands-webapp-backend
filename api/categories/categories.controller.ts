@@ -20,13 +20,15 @@ export const searchCommands = async(req: any, res: any) => {
 
     // Validations
     if(!category){
-        return res.status(httpCodes.not_found).json({
-            msg: "Not found"
+        return res.status(httpCodes.bad_request).json({
+            status: "fail",
+            msg: "Query category is compulsory"
         });
     }
     if(!(lang === "en" || lang === "es")){
-        return res.status(httpCodes.not_found).json({
-            msg: "Not found"
+        return res.status(httpCodes.bad_request).json({
+            status: "fail",
+            msg: "Query lan can be 'en' or 'es'"
         });
     }
     
@@ -101,8 +103,9 @@ export const createCommand = async(req: any, res: any) => {
 
     // Validations
     if(bodyIsEmpty(req.body)){
-        return res.json({
-            msg: "Debe introducir algún campo"
+        return res.status(httpCodes.bad_request).json({
+            status: "fail",
+            msg: "Body is empty"
         });
     }
 
@@ -119,13 +122,14 @@ export const createCommand = async(req: any, res: any) => {
         new: true
     });
     if(!found){
-        return res.json({
-            msg: "Error"
+        return res.status(httpCodes.not_found).json({
+            status: "fail",
+            msg: "Filter not found"
         });
     }
 
-    return res.json({
-        msg: "createCommand"
+    return res.status(httpCodes.created).json({
+        status: "success"
     });
 
 }

@@ -4,7 +4,8 @@
   "description": "Backend",
   "main": "server.ts",
   "scripts": {
-    "start": "set NODE_ENV=development&& nodemon server.ts"
+    "start": "set NODE_ENV=development&& nodemon server.ts",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
