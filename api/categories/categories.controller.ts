@@ -1,5 +1,7 @@
+import { NextFunction } from "express";
+import { AppError } from "../manage-errors/AppError";
 import { httpCodes } from "../utils/constants";
-import { bodyIsEmpty } from "../utils/utils";
+import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { CategoriesModel } from "./categories.model";
 
 /**
@@ -12,7 +14,7 @@ import { CategoriesModel } from "./categories.model";
  *      commands
  *      meaning
  */
-export const searchCommands = async(req: any, res: any) => {
+export const searchCommands = catchAsync(async(req: any, res: any, next: NextFunction) => {
     const {category, command, meaning, page} = req.query;
     const newPage = +page || 1;
     const limitPage = 20;
@@ -20,16 +22,10 @@ export const searchCommands = async(req: any, res: any) => {
 
     // Validations
     if(!category){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            msg: "Query category is compulsory"
-        });
+        return next(new AppError("Query category is compulsory", httpCodes.bad_request));
     }
     if(!(lang === "en" || lang === "es")){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            msg: "Query lan can be 'en' or 'es'"
-        });
+        return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
     }
     
     let result: any[] = [];
@@ -83,7 +79,7 @@ export const searchCommands = async(req: any, res: any) => {
                 });        
             }
         });
-    }  
+    }
 
     // Pagination
     const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
@@ -93,20 +89,17 @@ export const searchCommands = async(req: any, res: any) => {
         results: newResult.length,
         data: newResult
     });
-}
+});
 
 /**
  * Create command by id of filters
  */
-export const createCommand = async(req: any, res: any) => {
+export const createCommand = catchAsync(async(req: any, res: any, next: NextFunction) => {
     const {id_filter} = req.params;
 
     // Validations
     if(bodyIsEmpty(req.body)){
-        return res.status(httpCodes.bad_request).json({
-            status: "fail",
-            msg: "Body is empty"
-        });
+        return next(new AppError("Body is empty", httpCodes.bad_request));
     }
 
     // Update
@@ -122,14 +115,10 @@ export const createCommand = async(req: any, res: any) => {
         new: true
     });
     if(!found){
-        return res.status(httpCodes.not_found).json({
-            status: "fail",
-            msg: "Filter not found"
-        });
+        return next(new AppError("Filter not found", httpCodes.not_found));
     }
 
     return res.status(httpCodes.created).json({
         status: "success"
     });
-
-}
+});
