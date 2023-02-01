@@ -1,3 +1,6 @@
+/**
+ * Http codes ares used in the application
+ */
 export const httpCodes = {
     ok: 200,
     created: 201,

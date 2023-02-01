@@ -28,6 +28,7 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
         return next(new AppError("This user doesn't exit yet", httpCodes.bad_request));
     }
 
+    // Store user to use next routes
     req.user = currentUser
     next();
 }
