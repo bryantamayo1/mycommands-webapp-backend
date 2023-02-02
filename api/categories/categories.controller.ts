@@ -112,7 +112,8 @@ export const createCommand = catchAsync(async(req: any, res: any, next: NextFunc
             },
         }
     },{
-        new: true
+        new: true,
+        runValidators : true
     });
     if(!found){
         return next(new AppError("Filter not found", httpCodes.not_found));

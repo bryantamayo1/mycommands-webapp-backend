@@ -11,7 +11,7 @@ import { AppError } from '../manage-errors/AppError';
 import helmet from 'helmet';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import { validateToken } from '../auth/auth';
-import { createFilter } from '../filters/filters.controller';
+import { createFilter, modificateFilter } from '../filters/filters.controller';
 import { createCommand } from '../categories/categories.controller';
 const xss = require('xss-clean');
 
@@ -62,11 +62,16 @@ export class Server{
             
     routes(){
         // We use PATH_ADMIN to protect routes only to admin
+        // TODO: investigate why process.env.PATH_NAME doesn't work in router.ts
+        // and obly works in server.config.ts
         this.app.use(`${this.urlApi}${process.env.PATH_ADMIN}/users`, userRouter);
+        
         this.app.use(this.urlApi + "/commands", categoriesRouter);
-        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter`, validateToken, createCommand);
         this.app.use(this.urlApi + "/filters", filtersRouter);
+
+        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter`, validateToken, createCommand);
         this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/filters`, validateToken, createFilter);
+        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, modificateFilter);
         
         // Manage any router don't mention before
         this.app.all("*", (req, res, next: NextFunction) => {
