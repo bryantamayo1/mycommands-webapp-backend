@@ -123,3 +123,53 @@ export const createCommand = catchAsync(async(req: any, res: any, next: NextFunc
         status: "success"
     });
 });
+
+/**
+ * Modificate command by id of filters
+ */
+ export const modificateCommand = catchAsync(async(req: any, res: any, next: NextFunction) => {
+    const {id_filter, id_command} = req.params;
+    const {command, en, es} = req.body;
+
+    // Validations
+    if(bodyIsEmpty(req.body)){
+        return next(new AppError("Body is empty", httpCodes.bad_request));
+    }
+
+    // Steps to modificate one command
+    // 1) Find filter
+    const foundFilter = await CategoriesModel.findById(id_filter);
+    if(!foundFilter){
+        return next(new AppError("Filter not found", httpCodes.not_found));
+    }
+    // 2) Find command
+    let commandFound: any = null;
+    foundFilter.commands?.forEach(item => {
+        // 3) Update one command
+        if(item._id?.toString() === id_command){
+            item.command = command? command : item.command;
+            item.en = en? en : item.en;
+            item.es = es? es : item.es;
+            commandFound = item;
+            return;
+        }
+    });
+
+    // 4) Command not found 
+    if(!commandFound){
+        return next(new AppError("Command not found", httpCodes.not_found));
+    }
+    // 5) Save command
+    await foundFilter.save();
+    // 6) Cean data
+    const commandModified = JSON.parse(JSON.stringify(commandFound));
+    delete commandModified.createdAt;
+    delete commandModified.updatedAt;
+
+    return res.json({
+        status: "success",
+        data: {
+            ...commandModified
+        }
+    });
+ });

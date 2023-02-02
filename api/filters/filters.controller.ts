@@ -22,12 +22,6 @@ import { AppError } from "../manage-errors/AppError";
     });
 });
 
-/**
- * 
- * @param req 
- * @param res 
- * @returns 
- */
 export const createFilter = catchAsync(async(req: any, res: any, next: NextFunction) => {
     // Validations
     if(bodyIsEmpty(req.body)){
@@ -59,13 +53,12 @@ export const modificateFilter = catchAsync(async(req: any, res: any, next: NextF
     // Validations
     if(bodyIsEmpty(req.body)){
         return next(new AppError("Body is empty", httpCodes.bad_request));
-    }
-    if(!id_filter){
+    }else if(!id_filter){
         return next(new AppError("Error E1", httpCodes.bad_request));
-    }
-    if(category && version){
+    }else if(category && version){
         properties = {category, version}
     }
+
     const found = await CategoriesModel.findByIdAndUpdate(id_filter,
     {
         ...properties
@@ -78,6 +71,10 @@ export const modificateFilter = catchAsync(async(req: any, res: any, next: NextF
     }
 
     return res.json({
-        status: "success"
+        status: "success",
+        data: {
+            category: found.category,
+            version: found.version,
+        }
     });
 });

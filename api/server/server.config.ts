@@ -12,9 +12,8 @@ import helmet from 'helmet';
 import ExpressMongoSanitize from 'express-mongo-sanitize';
 import { validateToken } from '../auth/auth';
 import { createFilter, modificateFilter } from '../filters/filters.controller';
-import { createCommand } from '../categories/categories.controller';
+import { createCommand, modificateCommand } from '../categories/categories.controller';
 const xss = require('xss-clean');
-
 
 export class Server{
     app;
@@ -70,6 +69,7 @@ export class Server{
         this.app.use(this.urlApi + "/filters", filtersRouter);
 
         this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter`, validateToken, createCommand);
+        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter/:id_command`, validateToken, modificateCommand);
         this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/filters`, validateToken, createFilter);
         this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, modificateFilter);
         

@@ -4,11 +4,12 @@ import { promisify } from 'util';
 import { AppError } from "../manage-errors/AppError";
 import { UsersModel } from "../users/users.models";
 import { httpCodes } from '../utils/constants';
+import { catchAsync } from "../utils/utils";
 
 /**
  * Check token of FE and getting info of user
  */
-export const validateToken = async(req: any, res: Response, next: NextFunction) => {
+export const validateToken = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     // 1) Getting token
     let token = "";
     if(req.headers.xen && req.headers.xen.startsWith('Bearer')) {
@@ -31,4 +32,4 @@ export const validateToken = async(req: any, res: Response, next: NextFunction) 
     // Store user to use next routes
     req.user = currentUser
     next();
-}
+});

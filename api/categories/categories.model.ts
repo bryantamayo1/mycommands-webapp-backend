@@ -3,17 +3,17 @@ import {Schema, model} from 'mongoose';
 const CommandsSchema = new Schema({
     command: {
         type: String,
-        required: [true, "Command is compulsory"],
+        required: [true, "command is compulsory"],
         trim: true
     },
     en: {
         type: String,
-        required: [true, "En is compulsory"],
+        required: [true, "en is compulsory"],
         trim: true
     },
     es: {
         type: String,
-        required: [true, "Es is compulsory"],
+        required: [true, "es is compulsory"],
         trim: true
     },
     owner: {
@@ -28,13 +28,13 @@ const CommandsSchema = new Schema({
 const CategoriesSchema = new Schema({
     category: {
         type: String,
-        required: [true, "Category is compulsory"],
+        required: [true, "category is compulsory"],
         maxLength: 100,     // Including 100 characters
         trim: true
     },
     version: {
         type: String,
-        required: [true, "Version is compulsory"],
+        required: [true, "version is compulsory"],
         maxLength: 100,     // Including 100 characters
         trim: true
     },
