@@ -1,5 +1,5 @@
 # mycommands-webapp-backend
-> Backend of My commands web application
+> Backend of My commands web application built Typescript & Express & Mongo & AWS
 
 ## Table of contents
 1. [About](#about)
