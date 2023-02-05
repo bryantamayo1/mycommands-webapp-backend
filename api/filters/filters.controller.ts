@@ -1,7 +1,7 @@
 import { CategoriesModel } from "../categories/categories.model";
 import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { httpCodes } from '../utils/constants';
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
 
 /**
@@ -77,4 +77,27 @@ export const modificateFilter = catchAsync(async(req: any, res: any, next: NextF
             version: found.version,
         }
     });
+});
+
+/**
+ * Delete one filter by unique id
+ */
+export const deleteFilter = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+    const {id_filter} = req.params;
+
+    // Validations
+    if(!id_filter){
+        return next(new AppError("ID filter empty", httpCodes.bad_request));
+    }
+
+    // Delete filter
+    const foundFilter = await CategoriesModel.deleteOne({ _id: id_filter });
+    if(foundFilter.deletedCount !== 1){
+        return next(new AppError("ID filter doesn't exist", httpCodes.bad_request));
+    }else{
+        return res.json({
+            status: "success",
+            data: null
+        });
+    }
 });
