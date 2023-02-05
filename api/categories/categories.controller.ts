@@ -1,4 +1,4 @@
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
 import { httpCodes } from "../utils/constants";
 import { bodyIsEmpty, catchAsync } from "../utils/utils";
@@ -14,7 +14,7 @@ import { CategoriesModel } from "./categories.model";
  *      commands
  *      meaning
  */
-export const searchCommands = catchAsync(async(req: any, res: any, next: NextFunction) => {
+export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {category, command, meaning, page} = req.query;
     const newPage = +page || 1;
     const limitPage = 20;
@@ -94,7 +94,7 @@ export const searchCommands = catchAsync(async(req: any, res: any, next: NextFun
 /**
  * Create command by id of filters
  */
-export const createCommand = catchAsync(async(req: any, res: any, next: NextFunction) => {
+export const createCommand = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter} = req.params;
 
     // Validations
@@ -127,7 +127,7 @@ export const createCommand = catchAsync(async(req: any, res: any, next: NextFunc
 /**
  * Modificate command by id of filters
  */
- export const modificateCommand = catchAsync(async(req: any, res: any, next: NextFunction) => {
+ export const modificateCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
     const {id_filter, id_command} = req.params;
     const {command, en, es} = req.body;
 
@@ -173,3 +173,40 @@ export const createCommand = catchAsync(async(req: any, res: any, next: NextFunc
         }
     });
  });
+
+ /**
+ * Delete command by id_filter and id_command
+ */
+  export const deleteCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+    const {id_filter, id_command} = req.params;
+    // Validations
+    if(!id_filter && !id_command){
+        return next(new AppError("id_filter and id_command don't exist", httpCodes.bad_request));   
+    }else{
+        // Steps to delete one command
+        // 1) Find filter
+        const foundFilter = await CategoriesModel.findById(id_filter);
+        if(!foundFilter){
+            return next(new AppError("Filter not found", httpCodes.not_found));
+        }
+
+        // 2) Find command
+        let indexCmmandFound: any = -1;
+        indexCmmandFound = foundFilter.commands?.findIndex((item: any) => item._id?.toString() === id_command);
+
+        // 3) Command not found 
+        if(indexCmmandFound === -1){
+            return next(new AppError("Command not found", httpCodes.not_found));
+        }
+
+        // 4) Delete command
+        foundFilter.commands.splice(indexCmmandFound, indexCmmandFound);
+
+        // 5) Save command
+        await foundFilter.save();
+        return res.json({
+            status: "success",
+            data: null
+        });
+    }
+  });
