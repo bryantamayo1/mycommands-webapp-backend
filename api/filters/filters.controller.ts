@@ -8,7 +8,7 @@ import { AppError } from "../manage-errors/AppError";
  * Only return the filters to search
  * @returns Array with filters
  */
- export const findFilters = catchAsync(async(req: any, res: any) => {
+ export const findFilters = catchAsync(async(req: Request, res: Response) => {
     const found = await CategoriesModel.find();
     const cleanData = found.map(item => ({
         category: item.category,
@@ -22,7 +22,7 @@ import { AppError } from "../manage-errors/AppError";
     });
 });
 
-export const createFilter = catchAsync(async(req: any, res: any, next: NextFunction) => {
+export const createFilter = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     // Validations
     if(bodyIsEmpty(req.body)){
         return next(new AppError("Body is empty", httpCodes.bad_request));
@@ -45,7 +45,7 @@ export const createFilter = catchAsync(async(req: any, res: any, next: NextFunct
 /**
  * Update one filter by category and version
  */
-export const modificateFilter = catchAsync(async(req: any, res: any, next: NextFunction) => {
+export const modificateFilter = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
     const {id_filter} = req.params;
     const {category, version} = req.body;
     let properties = {}
@@ -93,7 +93,7 @@ export const deleteFilter = catchAsync(async(req: Request, res: Response, next: 
     // Delete filter
     const foundFilter = await CategoriesModel.deleteOne({ _id: id_filter });
     if(foundFilter.deletedCount !== 1){
-        return next(new AppError("ID filter doesn't exist", httpCodes.bad_request));
+        return next(new AppError("ID filter doesn't exist", httpCodes.not_found));
     }else{
         return res.json({
             status: "success",

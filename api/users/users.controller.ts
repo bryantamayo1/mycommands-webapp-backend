@@ -4,9 +4,9 @@ import { httpCodes } from '../utils/constants';
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import { AppError } from "../manage-errors/AppError";
-import { NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 
-export const login = catchAsync(async (req: any, res: any, next: NextFunction) => {
+export const login = catchAsync(async (req: any, res: Response, next: NextFunction) => {
     const {email, password} = req.body;
     // 1) Check if email and password exist
     if (!email || !password) {
@@ -35,7 +35,7 @@ export const login = catchAsync(async (req: any, res: any, next: NextFunction) =
     });
 });
 
-export const register = catchAsync(async(req: any, res: any, next: any) => {
+export const register = catchAsync(async(req: Request, res: Response, next: any) => {
     const {userName, email, password, passwordConfirm} = req.body;
     
     // Validations
