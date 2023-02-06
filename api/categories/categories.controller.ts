@@ -86,6 +86,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
 
     return res.json({
         status: "success",
+        total: result.length,
         results: newResult.length,
         data: newResult
     });
