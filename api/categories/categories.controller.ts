@@ -11,8 +11,8 @@ import { CategoriesModel } from "./categories.model";
  *      lang: [compulsory] 'en' or 'es'
  * Queryparams:
  *      category: [compulsory] with default 'all'. It must be id of MongoDB
- *      commands
- *      meaning
+ *      commands: it's opcional and it can't be ""
+ *      meaning: it's opcional and it can't be ""
  */
 export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {category, command, meaning, page} = req.query;
@@ -21,8 +21,8 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
     const {lang} = req.params;
 
     // Validations
-    if(!category){
-        return next(new AppError("Query category is compulsory", httpCodes.bad_request));
+    if(!category || command === "" || meaning === ""){
+        return next(new AppError("Error queries", httpCodes.bad_request));
     }
     if(!(lang === "en" || lang === "es")){
         return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
