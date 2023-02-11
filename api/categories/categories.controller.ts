@@ -46,8 +46,8 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                     });        
 
                 // Find by query command or meaning
-                }else if (element.command.toLowerCase().includes( command?.toLowerCase() ) ||
-                element[lang].toLowerCase().includes( meaning?.toLowerCase() )){
+                }else if (element.command?.toLowerCase().includes( command?.toLowerCase() ) ||
+                element[lang]?.toLowerCase().includes( meaning?.toLowerCase() )){
                     result.push({ 
                         command: element.command,
                         [lang]: element[lang]
@@ -71,8 +71,8 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                 });   
 
             // Find by query command or meaning
-            }else if(element.command.toLowerCase().includes( command?.toLowerCase() ) ||
-            element[lang].toLowerCase().includes( meaning?.toLowerCase() )){
+            }else if(element.command?.toLowerCase().includes( command?.toLowerCase() ) ||
+            element[lang]?.toLowerCase().includes( meaning?.toLowerCase() )){
                 result.push({ 
                     command: element.command,
                     [lang]: element[lang]
