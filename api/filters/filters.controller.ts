@@ -18,7 +18,7 @@ import { AppError } from "../manage-errors/AppError";
     return res.json({
         status: "success",
         results: cleanData.length,
-        cdata: cleanData
+        data: cleanData
     });
 });
 
