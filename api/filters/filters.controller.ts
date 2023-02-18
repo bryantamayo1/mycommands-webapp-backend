@@ -10,13 +10,19 @@ import { AppError } from "../manage-errors/AppError";
  */
  export const findFilters = catchAsync(async(req: Request, res: Response) => {
     const found = await CategoriesModel.find();
-    const cleanData = found.map(item => ({
-        category: item.category,
-        version: item.version,
-        _id: item._id
-    }));
+    let totalCommands = 0;
+    const cleanData = found.map(item => {
+        totalCommands+=item.commands.length;
+        return {
+            category: item.category,
+            version: item.version,
+            results: item.commands.length,
+            _id: item._id
+        }
+    });
     return res.json({
         status: "success",
+        totalCommands,
         results: cleanData.length,
         data: cleanData
     });

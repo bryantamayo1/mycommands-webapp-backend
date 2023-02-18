@@ -10,7 +10,7 @@ import { CategoriesModel } from "./categories.model";
  * Path:
  *      lang: [compulsory] 'en' or 'es'
  * Queryparams:
- *      category: [compulsory] with default 'all'. It must be id of MongoDB
+ *      category: [compulsory] with default 'all'. It must be id of MongoDB or 'all'
  *      commands: it's opcional and it can't be ""
  *      meaning: it's opcional and it can't be ""
  */
