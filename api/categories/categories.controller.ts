@@ -13,6 +13,11 @@ import { CategoriesModel } from "./categories.model";
  *      category: [compulsory] with default 'all'. It must be id of MongoDB or 'all'
  *      commands: it's opcional and it can't be ""
  *      meaning: it's opcional and it can't be ""
+ * Possiblities in queries
+ *      ?category=any
+ *      ?category=any&command=any
+ *      ?category=any&meaning=any
+ *      ?category=any&command=any&meaning=any
  */
 export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {category, command, meaning, page} = req.query;
@@ -38,20 +43,34 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
         // All in one buffer, is easer to work
         commands.map( (item: any) => {
             item.commands?.map((element: any) => {
-                // Only find by category = all
+                // Only find by category = all without queries
                 if(!command && !meaning){
                     result.push({ 
                         command: element.command,
                         [lang]: element[lang]
                     });        
-
-                // Find by query command or meaning
-                }else if (element.command.toLowerCase().includes( command?.toLowerCase() ) ||
-                element[lang].toLowerCase().includes( meaning?.toLowerCase() )){
+                
+                // Find by command and meaning
+                }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+                element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
                     result.push({ 
                         command: element.command,
                         [lang]: element[lang]
                     });        
+
+                // Find only by command
+                }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
+                    result.push({ 
+                        command: element.command,
+                        [lang]: element[lang]
+                    });    
+                
+                // Find only by meaning
+                }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+                    result.push({ 
+                        command: element.command,
+                        [lang]: element[lang]
+                    });    
                 }
             });
         });
@@ -63,20 +82,34 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
 
         // All in one buffer, is easer to work
         commands.commands?.map((element: any) => {
-            // Only find without queries
+            // Only find by category = all without queries
             if(!command && !meaning){
                 result.push({ 
                     command: element.command,
                     [lang]: element[lang]
                 });   
 
-            // Find by query command or meaning
-            }else if(element.command.toLowerCase().includes( command?.toLowerCase() ) ||
-            element[lang].toLowerCase().includes( meaning?.toLowerCase() )){
+                // Find by command and meaning
+            }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+            element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
                 result.push({ 
                     command: element.command,
                     [lang]: element[lang]
                 });        
+
+            // Find only by command
+            }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
+                result.push({ 
+                    command: element.command,
+                    [lang]: element[lang]
+                });    
+            
+            // Find only by meaning
+            }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+                result.push({ 
+                    command: element.command,
+                    [lang]: element[lang]
+                });    
             }
         });
     }
