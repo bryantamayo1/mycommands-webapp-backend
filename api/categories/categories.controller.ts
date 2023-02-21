@@ -21,7 +21,8 @@ import { CategoriesModel } from "./categories.model";
  */
 export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {category, command, meaning, page} = req.query;
-    const newPage = +page || 1;
+    let newPage = +page || 1;
+    let total = 0;
     const limitPage = 20;
     const {lang} = req.params;
 
@@ -116,10 +117,17 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
 
     // Pagination
     const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
+    // Parse info in case doesn’t exist results
+    if(!newResult.length){
+        newPage = 0;
+        total = 0;
+    }else{
+        total = result.length;
+    }
 
     return res.json({
         status: "success",
-        total: result.length,
+        total,
         results: newResult.length,
         page: newPage,
         limitPage,
