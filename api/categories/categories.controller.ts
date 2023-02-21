@@ -123,6 +123,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
         results: newResult.length,
         page: newPage,
         limitPage,
+        lang,
         data: newResult
     });
 });
