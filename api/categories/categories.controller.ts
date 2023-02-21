@@ -121,6 +121,8 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
         status: "success",
         total: result.length,
         results: newResult.length,
+        page: newPage,
+        limitPage,
         data: newResult
     });
 });
