@@ -6,6 +6,7 @@
   "scripts": {
     "start": "set NODE_ENV=development&& nodemon server.ts",
     "prod": "set NODE_ENV=production&& nodemon server.ts",
+    "prod:linux": "NODE_ENV=production nodemon server.ts",
     "build": "tsc"
   },
   "repository": {
