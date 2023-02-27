@@ -61,10 +61,10 @@ export class Server{
         this.app.use(helmet());
 
         // Body parser, reading data from body into req.body since FE
-        this.app.use(express.json({ limit: '1kb' }));          // limit request as json
+        this.app.use(express.json({ limit: '10kb' }));          // limit request as json
 
         // Recognize object as string o arrays since FE
-        this.app.use(express.urlencoded({ extended: true, limit: '1kb' })); // limit request as string and buffer
+        this.app.use(express.urlencoded({ extended: true, limit: '10kb' })); // limit request as string and buffer
 
         // Data sanitization against NoSQL query injection
         this.app.use(ExpressMongoSanitize());
