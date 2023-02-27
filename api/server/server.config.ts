@@ -26,15 +26,16 @@ export class Server{
     constructor(){
         // Server
         this.app = express();
-        if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
-            this.server = https.createServer(
-                {
-                    key: fs.readFileSync(process.env.KEY!, 'utf8'),
-                    cert: fs.readFileSync(process.env.CERT!, 'utf8'),
-                    ca: fs.readFileSync(process.env.CA!, 'utf8')
-                },
-                this.app
-            );
+        // if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
+        if(false){
+            // this.server = https.createServer(
+            //     {
+            //         key: fs.readFileSync(process.env.KEY!, 'utf8'),
+            //         cert: fs.readFileSync(process.env.CERT!, 'utf8'),
+            //         ca: fs.readFileSync(process.env.CA!, 'utf8')
+            //     },
+            //     this.app
+            // );
         }else{
             this.server = http.createServer(this.app);  
         }
