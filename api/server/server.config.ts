@@ -14,13 +14,30 @@ import { validateToken } from '../auth/auth';
 import { createFilter, deleteFilter, modificateFilter } from '../filters/filters.controller';
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 const xss = require('xss-clean');
+import https    from'https';
+import http     from 'http';
+import fs       from 'fs';        
+
 
 export class Server{
     app;
+    server;
     urlApi = "/api/v1"
     constructor(){
         // Server
         this.app = express();
+        if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
+            this.server = https.createServer(
+                {
+                    key: fs.readFileSync(process.env.KEY!, 'utf8'),
+                    cert: fs.readFileSync(process.env.CERT!, 'utf8'),
+                    ca: fs.readFileSync(process.env.CA!, 'utf8')
+                },
+                this.app
+            );
+        }else{
+            this.server = http.createServer(this.app);  
+        }
 
         // Connect DB
         this.connectDB();
