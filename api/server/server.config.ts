@@ -17,7 +17,7 @@ const xss = require('xss-clean');
 
 export class Server{
     app;
-    urlApi = "/v1"
+    urlApi = "/api/v1"
     constructor(){
         // Server
         this.app = express();
