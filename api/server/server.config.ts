@@ -26,8 +26,8 @@ export class Server{
     constructor(){
         // Server
         this.app = express();
-        // if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
-        if(false){
+        if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
+            console.log("[https]");
             // this.server = https.createServer(
             //     {
             //         key: fs.readFileSync(process.env.KEY!, 'utf8'),
@@ -37,6 +37,7 @@ export class Server{
             //     this.app
             // );
         }else{
+            console.log("[http]");
             this.server = http.createServer(this.app);  
         }
 
