@@ -28,14 +28,14 @@ export class Server{
         this.app = express();
         if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
             console.log("[https]");
-            // this.server = https.createServer(
-            //     {
-            //         key: fs.readFileSync(process.env.KEY!, 'utf8'),
-            //         cert: fs.readFileSync(process.env.CERT!, 'utf8'),
-            //         ca: fs.readFileSync(process.env.CA!, 'utf8')
-            //     },
-            //     this.app
-            // );
+            this.server = https.createServer(
+                {
+                    key: fs.readFileSync(process.env.KEY!, 'utf8'),
+                    cert: fs.readFileSync(process.env.CERT!, 'utf8'),
+                    ca: fs.readFileSync(process.env.CA!, 'utf8')
+                },
+                this.app
+            );
         }else{
             console.log("[http]");
             this.server = http.createServer(this.app);  
