@@ -20,11 +20,13 @@ process.on("uncaughtException", (err, origin) => {
 if(process.env.NODE_ENV === 'development'){
     dotenv.config({ path: "./.env.development.local" });
     console.log("[mode] development");
+    console.log("[SO] "+process.env.SO);
 }else{
     if(process.env.SO !== 'linux'){
         dotenv.config({ path: "./.env.production.local" });
     }
     console.log("[mode] production");
+    console.log("[SO] "+process.env.SO);
 }
 
 const server = new Server();
