@@ -5,8 +5,10 @@
   "main": "server.ts",
   "scripts": {
     "start": "set NODE_ENV=development&& nodemon server.ts",
-    "prod": "set NODE_ENV=production&& nodemon server.ts",
-    "prod:linux": "NODE_ENV=production nodemon server.ts",
+    "dev": "set NODE_ENV=development&& node build/server.js",
+    "prod": "set NODE_ENV=production&& node build/server.js",
+    "prod:linux": "NODE_ENV=production ts-node server.ts",
+    "prod_build:linux": "NODE_ENV=production node build/server.js",
     "build": "tsc"
   },
   "repository": {
