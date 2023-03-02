@@ -19,7 +19,12 @@ export const dbConnection = async() => {
                 authSource: "admin"
             },
             user:  process.env.USER,
-            pass: process.env.PASS
+            pass: process.env.PASS,
+            poolSize: 10,
+            useCreateIndex: true,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useFindAndModify: false 
         });
         console.log("[bbdd] online");
     }catch(error){
