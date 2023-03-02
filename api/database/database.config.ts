@@ -17,7 +17,9 @@ export const dbConnection = async() => {
         await mongoose.connect(dataBase, {
             auth: {
                 authSource: "admin"
-            }
+            },
+            user:  process.env.USER,
+            pass: process.env.PASS
         });
         console.log("[bbdd] online");
     }catch(error){
