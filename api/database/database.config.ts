@@ -14,18 +14,7 @@ export const dbConnection = async() => {
         // Disable warning in mongoose version 8
         mongoose.set("strictQuery", true);
         //@ts-ignore
-        await mongoose.connect(dataBase, {
-            auth: {
-                authSource: "admin"
-            },
-            user:  process.env.USER,
-            pass: process.env.PASS,
-            poolSize: 10,
-            useCreateIndex: true,
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useFindAndModify: false 
-        });
+        await mongoose.connect(dataBase);
         console.log("[bbdd] online");
     }catch(error){
         console.log("[error bbdd connect] ", error);
