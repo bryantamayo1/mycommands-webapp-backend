@@ -14,10 +14,7 @@ import { validateToken } from '../auth/auth';
 import { createFilter, deleteFilter, modificateFilter } from '../filters/filters.controller';
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 const xss = require('xss-clean');
-import https    from'https';
-import http     from 'http';
-import fs       from 'fs';        
-
+import http     from 'http';  
 
 export class Server{
     app;
@@ -26,21 +23,7 @@ export class Server{
     constructor(){
         // Server
         this.app = express();
-        // if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
-        if(false){
-            console.log("[https]");
-            this.server = https.createServer(
-                {
-                    key: fs.readFileSync(process.env.KEY!, 'utf8'),
-                    cert: fs.readFileSync(process.env.CERT!, 'utf8'),
-                    ca: fs.readFileSync(process.env.CA!, 'utf8')
-                },
-                this.app
-            );
-        }else{
-            console.log("[http]");
-            this.server = http.createServer(this.app);  
-        }
+        this.server = http.createServer(this.app);  
 
         // Connect DB
         this.connectDB();
