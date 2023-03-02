@@ -26,8 +26,8 @@ export class Server{
     constructor(){
         // Server
         this.app = express();
-        // if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
-        if(false){
+        if(process.env.NODE_ENV === 'production' && process.env.SO === 'linux'){
+        // if(false){
             console.log("[https]");
             this.server = https.createServer(
                 {
