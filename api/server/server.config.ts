@@ -15,6 +15,7 @@ import { createFilter, deleteFilter, modificateFilter } from '../filters/filters
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 const xss = require('xss-clean');
 import http     from 'http';  
+const fs = require('fs');
 
 export class Server{
     app;
@@ -114,6 +115,7 @@ export class Server{
             console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
             server.close(() => {
                 console.log('💥 Process terminated!');
+                fs.writeFileSync("test-fail.txt", new Date())
                 process.exit(0); 
             });
         });
