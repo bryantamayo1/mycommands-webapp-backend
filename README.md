@@ -5,8 +5,9 @@
 1. [About](#about)
 2. [Installation](#installation)
 3. [Structure of project](#structure-of-project)
-4. [Updates](#updates)
-5. [Licence](#license)
+4. [Libraries](#libraries)
+5. [Updates](#updates)
+6. [Licence](#license)
 
 ## About
 Backend built with Express, MongoDB and EC2 of AWS.
@@ -28,6 +29,9 @@ Response's format JSEND is used in whole project, to more information see [JSEND
     npm run build
 ```
 ## Structure of project
+
+## Libraries
+- moment
 ## Updates
 Each six months it tries to update all project with npm-check-updates library.
 ## Licence

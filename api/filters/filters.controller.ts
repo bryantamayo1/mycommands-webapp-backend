@@ -3,13 +3,15 @@ import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { httpCodes } from '../utils/constants';
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
+import { updateCounterPage } from "../infoPage/infoPage.controller";
 
 /**
- * Only return the filters to search
+ * Return the filters to search and count the access to web page
  * @returns Array with filters
  */
  export const findFilters = catchAsync(async(req: Request, res: Response) => {
     const found = await CategoriesModel.find();
+    updateCounterPage();
     let totalCommands = 0;
     const cleanData = found.map(item => {
         totalCommands+=item.commands.length;

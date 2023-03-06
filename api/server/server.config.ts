@@ -95,6 +95,7 @@ export class Server{
         });
         
         // Manage error of promises, callbacks, ... that haven't a catch
+        // Function which use catchAsync
         process.on("unhandledRejection", (err: any, origin) => {
             console.log('[UNHANDLED REJECTION] 💥 Shutting down...');
             console.log({
