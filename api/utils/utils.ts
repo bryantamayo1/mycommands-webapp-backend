@@ -12,7 +12,7 @@
 
 /**
  * It's used in each controller of application to
- * use handle error of express
+ * use handle error of Express.js
  */
 export const catchAsync = (fn: any) => {
     return (req: any, res: any, next: any) => {
