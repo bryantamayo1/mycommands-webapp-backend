@@ -48,6 +48,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                 if(!command && !meaning){
                     result.push({ 
                         command: element.command,
+                        updatedAt: element.updatedAt,
                         [lang]: element[lang]
                     });        
                 
@@ -56,6 +57,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                 element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
                     result.push({ 
                         command: element.command,
+                        updatedAt: element.updatedAt,
                         [lang]: element[lang]
                     });        
 
@@ -63,6 +65,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                 }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
                     result.push({ 
                         command: element.command,
+                        updatedAt: element.updatedAt,
                         [lang]: element[lang]
                     });    
                 
@@ -70,6 +73,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
                 }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
                     result.push({ 
                         command: element.command,
+                        updatedAt: element.updatedAt,
                         [lang]: element[lang]
                     });    
                 }
@@ -87,6 +91,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             if(!command && !meaning){
                 result.push({ 
                     command: element.command,
+                    updatedAt: element.updatedAt,
                     [lang]: element[lang]
                 });   
 
@@ -95,6 +100,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
                 result.push({ 
                     command: element.command,
+                    updatedAt: element.updatedAt,
                     [lang]: element[lang]
                 });        
 
@@ -102,6 +108,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
                 result.push({ 
                     command: element.command,
+                    updatedAt: element.updatedAt,
                     [lang]: element[lang]
                 });    
             
@@ -109,6 +116,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
                 result.push({ 
                     command: element.command,
+                    updatedAt: element.updatedAt,
                     [lang]: element[lang]
                 });    
             }
