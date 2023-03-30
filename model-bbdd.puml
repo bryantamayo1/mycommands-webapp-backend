@@ -15,21 +15,42 @@ class CategoriesSchema{
     -owner [id of UsersSchema]: String
     -createdAt: Date
     -updatedAt: Date
+    -sub_categories: Array
 }
 
-class CategoriesSchema
-    note left: commands is embedded
+note left of CategoriesSchema::commands
+    commands is embedded
+end note
+note left of CategoriesSchema::sub_categories
+    sub_categories is embedded
+end note
 
 class commands{
     -command: String
     -es: String
     -en: String
     -owner [id of UsersSchema]: String
-        -createdAt: Date
+    -createdAt: Date
     -updatedAt: Date
 }
 
+// 'en' and 'es' are subcategories
+class sub_categories{
+    -createdAt: Date
+    -_id: ObjectId
+    -updatedAt: Date
+    -owner [id of UsersSchema]: String
+    -es: String
+    -en: String
+}
+
+class info_pages{
+    -MM-YYYY: string
+}    
+
 CategoriesSchema --|> commands: 1:MANY - Embedded
+CategoriesSchema --|> sub_categories: 1:FEW - Embedded
 UsersSchema -[dashed]-> commands
+UsersSchema -[dashed]-> sub_categories
 
 @enduml
