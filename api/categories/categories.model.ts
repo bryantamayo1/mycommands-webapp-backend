@@ -1,4 +1,5 @@
 import {Schema, model} from 'mongoose';
+import { SubCategoriesSchema } from '../subCategories/subCategories.model';
 
 const CommandsSchema = new Schema({
     command: {
@@ -42,6 +43,12 @@ const CategoriesSchema = new Schema({
         type: [CommandsSchema], 
         default: []
     },
+    subCategories: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'subcategories'
+        }
+    ],
     owner: {
         type: String,
         required: true,

@@ -55,7 +55,7 @@ export const register = catchAsync(async(req: Request, res: Response, next: any)
     }
 
     // Create new user
-    const newUser = await UsersModel.create({
+    await UsersModel.create({
         userName,
         email,
         password,

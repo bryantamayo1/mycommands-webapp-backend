@@ -9,19 +9,39 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
  * Return the filters to search and count the access to web page
  * @returns Array with filters
  */
- export const findFilters = catchAsync(async(req: Request, res: Response) => {
-    const found = await CategoriesModel.find();
+ export const findFilters = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+    const {lang} = req.params;
+    
+    // Validations
+    if(!(lang === "en" || lang === "es")){
+        return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
+    }
+
+    const found = await CategoriesModel.find().populate("subCategories");
     updateCounterPage();
     let totalCommands = 0;
+    // Building response
     const cleanData = found.map(item => {
         totalCommands+=item.commands.length;
+        let subCategories = undefined;
+        if(item.subCategories.length > 0){
+            subCategories = item.subCategories.map( (e: any) => {
+                return {
+                    [lang]: e[lang],
+                    _id: e._id
+                };
+            });
+        }
+
         return {
             category: item.category,
+            subCategories: subCategories,
             version: item.version,
             results: item.commands.length,
             _id: item._id
         }
     });
+
     return res.json({
         status: "success",
         totalCommands,

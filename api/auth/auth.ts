@@ -30,6 +30,6 @@ export const validateToken = catchAsync(async(req: any, res: Response, next: Nex
     }
 
     // Store user to use next routes
-    req.user = currentUser
+    req.user = currentUser;
     next();
 });
