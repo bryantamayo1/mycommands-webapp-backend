@@ -1,4 +1,5 @@
 import { model, Schema } from "mongoose";
+import { colorsEnum } from "../utils/utils";
 
 export const SubCategoriesSchema = new Schema({
     en: {
@@ -17,6 +18,11 @@ export const SubCategoriesSchema = new Schema({
         type: String,
         required: true,
         select: false
+    },
+    color: {
+        type: String,
+        enum: colorsEnum,
+        maxLength: [100, "Maximum characters allowed 100"]
     }
 }, {
     timestamps: true

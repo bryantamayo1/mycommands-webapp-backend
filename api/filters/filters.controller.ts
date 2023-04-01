@@ -28,6 +28,7 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
             subCategories = item.subCategories.map( (e: any) => {
                 return {
                     [lang]: e[lang],
+                    color: e.color,
                     _id: e._id
                 };
             });

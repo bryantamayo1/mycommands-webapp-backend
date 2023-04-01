@@ -196,7 +196,7 @@ export const deleteCommand = catchAsync(async(req: Request, res: Response, next:
 ///////////////////
 const populateInCommands = async (command: any, lang: string) => {
     const subCategories = [];
-    const select = `_id ${lang}`;
+    const select = `_id ${lang} color`;
     if(command.subCategories?.length > 0){
         for(let i = 0; i < command.subCategories.length; i++){
             const foundSubCategories = await SubCategoriesModel.findById(command.subCategories[i]).select(select);
