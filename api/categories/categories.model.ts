@@ -1,29 +1,5 @@
 import {Schema, model} from 'mongoose';
-
-const CommandsSchema = new Schema({
-    command: {
-        type: String,
-        required: [true, "command is compulsory"],
-        trim: true
-    },
-    en: {
-        type: String,
-        required: [true, "en is compulsory"],
-        trim: true
-    },
-    es: {
-        type: String,
-        required: [true, "es is compulsory"],
-        trim: true
-    },
-    owner: {
-        type: String,
-        required: true,
-        select: false
-    }
-}, {
-    timestamps: true
-});
+import { CommandsSchema } from '../commands/commands.model';
 
 const CategoriesSchema = new Schema({
     category: {
@@ -42,6 +18,12 @@ const CategoriesSchema = new Schema({
         type: [CommandsSchema], 
         default: []
     },
+    subCategories: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'subcategories'
+        }
+    ],
     owner: {
         type: String,
         required: true,

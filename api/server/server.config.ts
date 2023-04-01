@@ -1,20 +1,21 @@
-import express, { NextFunction } from 'express';
-import { dbConnection } from '../database/database.config';
-import { categoriesRouter } from '../categories/categories.router';
-import { filtersRouter } from '../filters/filters.router';
-import { userRouter } from '../users/users.router';
-import { httpCodes } from '../utils/constants';
-import { globalErrorHandler } from '../manage-errors/handle-errors';
-import morgan from 'morgan';
-import cors from 'cors';
-import { AppError } from '../manage-errors/AppError';
-import helmet from 'helmet';
-import ExpressMongoSanitize from 'express-mongo-sanitize';
-import { validateToken } from '../auth/auth';
+import express, { NextFunction }    from 'express';
+import { dbConnection }             from '../database/database.config';
+import { categoriesRouter }         from '../categories/categories.router';
+import { filtersRouter }            from '../filters/filters.router';
+import { userRouter }               from '../users/users.router';
+import { httpCodes }                from '../utils/constants';
+import { globalErrorHandler }       from '../manage-errors/handle-errors';
+import morgan                       from 'morgan';
+import cors                         from 'cors';
+import { AppError }                 from '../manage-errors/AppError';
+import helmet                       from 'helmet';
+import ExpressMongoSanitize         from 'express-mongo-sanitize';
+import { validateToken }            from '../auth/auth';
 import { createFilter, deleteFilter, modificateFilter } from '../filters/filters.controller';
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
+import http                         from 'http';  
+import { subCategoriesRouter }      from '../subCategories/subCategories.router';
 const xss = require('xss-clean');
-import http     from 'http';  
 
 export class Server{
     app;
@@ -78,6 +79,9 @@ export class Server{
         this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/filters`, validateToken, createFilter);
         this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, modificateFilter);
         this.app.delete(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, deleteFilter);
+
+        // CRUD Subcategories
+        this.app.use(`${this.urlApi}${process.env.PATH_ADMIN}/subcategories`, validateToken, subCategoriesRouter);
         
         // Manage any router don't mention before
         this.app.all("*", (req, res, next: NextFunction) => {

@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
+import { SubCategoriesModel } from "../subCategories/subCategories.model";
 import { httpCodes } from "../utils/constants";
 import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { CategoriesModel } from "./categories.model";
@@ -39,109 +40,35 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
     // If category = all
     if(category === "all"){
         let found = await CategoriesModel.find();
-        const commands = JSON.parse(JSON.stringify(found));
-
-        // All in one buffer, is easer to work
-        commands.map( (item: any) => {
-            item.commands?.map((element: any) => {
-                // Only find by category = all without queries
-                if(!command && !meaning){
-                    result.push({ 
-                        command: element.command,
-                        updatedAt: element.updatedAt,
-                        [lang]: element[lang]
-                    });        
-                
-                // Find by command and meaning
-                }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
-                element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
-                    result.push({ 
-                        command: element.command,
-                        updatedAt: element.updatedAt,
-                        [lang]: element[lang]
-                    });        
-
-                // Find only by command
-                }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
-                    result.push({ 
-                        command: element.command,
-                        updatedAt: element.updatedAt,
-                        [lang]: element[lang]
-                    });    
-                
-                // Find only by meaning
-                }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
-                    result.push({ 
-                        command: element.command,
-                        updatedAt: element.updatedAt,
-                        [lang]: element[lang]
-                    });    
-                }
-            });
-        });
+        const commandsFound = JSON.parse(JSON.stringify(found));
+        return getCommandsWithSubCategoriesByAllCategories(
+            commandsFound,
+            command,
+            meaning,
+            lang,
+            newPage,
+            total,
+            limitPage,
+            res
+        );
 
     // 2º Case
     }else{
         let found: any = await CategoriesModel.findById(category);
-        const commands = JSON.parse(JSON.stringify(found));
+        const commandsFound = JSON.parse(JSON.stringify(found));
 
         // All in one buffer, is easer to work
-        commands.commands?.map((element: any) => {
-            // Only find by category = all without queries
-            if(!command && !meaning){
-                result.push({ 
-                    command: element.command,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang]
-                });   
-
-                // Find by command and meaning
-            }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
-            element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
-                result.push({ 
-                    command: element.command,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang]
-                });        
-
-            // Find only by command
-            }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
-                result.push({ 
-                    command: element.command,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang]
-                });    
-            
-            // Find only by meaning
-            }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
-                result.push({ 
-                    command: element.command,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang]
-                });    
-            }
-        });
+        return getCommandsWithSubCategoriesById(
+            commandsFound,
+            command,
+            meaning,
+            lang,
+            newPage,
+            total,
+            limitPage,
+            res
+        ); 
     }
-
-    // Pagination
-    const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
-    // Parse info in case doesn’t exist results
-    if(!newResult.length){
-        newPage = 0;
-        total = 0;
-    }else{
-        total = result.length;
-    }
-
-    return res.json({
-        status: "success",
-        total,
-        results: newResult.length,
-        page: newPage,
-        limitPage,
-        lang,
-        data: newResult
-    });
 });
 
 /**
@@ -230,7 +157,7 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
  /**
  * Delete command by id_filter and id_command
  */
-  export const deleteCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+export const deleteCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
     const {id_filter, id_command} = req.params;
     // Validations
     if(!id_filter && !id_command){
@@ -262,4 +189,167 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
             data: null
         });
     }
-  });
+});
+  
+///////////////////
+// Useful functions
+///////////////////
+const populateInCommands = async (command: any, lang: string) => {
+    const subCategories = [];
+    const select = `_id ${lang}`;
+    if(command.subCategories?.length > 0){
+        for(let i = 0; i < command.subCategories.length; i++){
+            const foundSubCategories = await SubCategoriesModel.findById(command.subCategories[i]).select(select);
+            subCategories.push(foundSubCategories)
+        }
+    }
+    return subCategories;
+}
+
+const getCommandsWithSubCategoriesById = async(commandsFound: any, command: string, meaning: string, lang: string, newPage: number, total: number, limitPage: number, res: any) => {
+    const result: any = [];
+    for( let i = 0; i < commandsFound.commands?.length; i++){
+        const element = commandsFound.commands[i];
+        // Only find by category = all without queries
+        if(!command && !meaning){
+            const populatedSubCategories = await populateInCommands(element, lang);
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                [lang]: element[lang],
+                _id: element._id
+            });  
+        
+        // Find by command and meaning
+        }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+        element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
+            const populatedSubCategories = await populateInCommands(element, lang);
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                [lang]: element[lang],
+                _id: element._id
+            });  
+        
+        // Find only by command
+        }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
+            const populatedSubCategories = await populateInCommands(element, lang);
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                [lang]: element[lang],
+                _id: element._id
+            });  
+        
+        // Find only by meaning
+        }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+            const populatedSubCategories = await populateInCommands(element, lang);
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                [lang]: element[lang],
+                _id: element._id
+            });  
+        }
+    }
+
+    // Pagination
+    const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
+    // Parse info in case doesn’t exist results
+    if(!newResult.length){
+        newPage = 0;
+        total = 0;
+    }else{
+        total = result.length;
+    }
+
+    return res.json({
+        status: "success",
+        total,
+        results: newResult.length,
+        page: newPage,
+        limitPage,
+        lang,
+        data: newResult
+    });
+}
+
+const getCommandsWithSubCategoriesByAllCategories = async(commandsFound: any, command: string, meaning: string, lang: string, newPage: number, total: number, limitPage: number, res: any) => {
+    const result: any = [];
+    for(let i = 0; i < commandsFound.length; i++){
+        const item = commandsFound[i];
+        for(let j = 0; j < item.commands.length; j++){
+            const element = item.commands[j];
+            // Only find by category = all without queries
+            if(!command && !meaning){
+                const populatedSubCategories = await populateInCommands(element, lang);
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    [lang]: element[lang],
+                    _id: element._id
+                });  
+            
+            // Find by command and meaning
+            }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+            element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
+                const populatedSubCategories = await populateInCommands(element, lang);
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    [lang]: element[lang],
+                    _id: element._id
+                });  
+            
+            // Find only by command
+            }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
+                const populatedSubCategories = await populateInCommands(element, lang);
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    [lang]: element[lang],
+                    _id: element._id
+                });  
+            
+            // Find only by meaning
+            }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+                const populatedSubCategories = await populateInCommands(element, lang);
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    [lang]: element[lang],
+                    _id: element._id
+                });  
+            }
+        }
+    }
+
+
+    // Pagination
+    const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
+    // Parse info in case doesn’t exist results
+    if(!newResult.length){
+        newPage = 0;
+        total = 0;
+    }else{
+        total = result.length;
+    }
+
+    return res.json({
+        status: "success",
+        total,
+        results: newResult.length,
+        page: newPage,
+        limitPage,
+        lang,
+        data: newResult
+    });
+}
