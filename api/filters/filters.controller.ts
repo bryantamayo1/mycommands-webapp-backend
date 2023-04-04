@@ -18,7 +18,6 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
     }
 
     const found = await CategoriesModel.find().populate("subCategories");
-    updateCounterPage();
     let totalCommands = 0;
     // Building response
     const cleanData = found.map(item => {
