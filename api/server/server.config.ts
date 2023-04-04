@@ -15,6 +15,7 @@ import { createFilter, deleteFilter, modificateFilter } from '../filters/filters
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 import http                         from 'http';  
 import { subCategoriesRouter }      from '../subCategories/subCategories.router';
+import { infoPageRouter } from '../infoPage/infoPage.router';
 const xss = require('xss-clean');
 
 export class Server{
@@ -69,6 +70,7 @@ export class Server{
         // and obly works in server.config.ts
         this.app.use(`${this.urlApi}${process.env.PATH_ADMIN}/users`, userRouter);
         
+        this.app.use(this.urlApi + "/infopage", infoPageRouter);
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         this.app.use(this.urlApi + "/filters", filtersRouter);
 
