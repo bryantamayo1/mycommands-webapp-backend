@@ -58,7 +58,6 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
     }else{
         let found: any = await CategoriesModel.findById(category);
         const commandsFound = JSON.parse(JSON.stringify(found));
-
         // All in one buffer, is easer to work
         return getCommandsWithSubCategoriesById(
             commandsFound,
@@ -208,10 +207,11 @@ const populateInCommands = async (command: any, lang: string, subCategoryQueryPa
         }
     }
     return subCategories.map((e: any) => {
-        if(e._id === subCategoryQueryParam){
-            return {...e, found: true}
+        const newE = JSON.parse(JSON.stringify(e));
+        if(newE._id === subCategoryQueryParam){
+            return {...newE, found: true}
         }else{
-            return e;
+            return newE;
         }
     });
 }
@@ -227,54 +227,26 @@ const getCommandsWithSubCategoriesById = async(
         subcategory: string,
         res: any
     ) => {
-    const result: any = [];
+    let result: any = [];
     for( let i = 0; i < commandsFound.commands?.length; i++){
         const element = commandsFound.commands[i];
+
         // Find without command && meaning
         if(!command && !meaning){
-            const populatedSubCategories = await populateInCommands(element, lang);
-            result.push({ 
-                command: element.command,
-                subCategories: populatedSubCategories,
-                updatedAt: element.updatedAt,
-                [lang]: element[lang],
-                _id: element._id
-            });  
+            result = await foundSubCategory(result, element, lang, subcategory);
         
         // Find by command and meaning
         }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
         element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
-            const populatedSubCategories = await populateInCommands(element, lang, subcategory);
-            console.log("populatedSubCategories: ", populatedSubCategories);
-            result.push({ 
-                command: element.command,
-                subCategories: populatedSubCategories,
-                updatedAt: element.updatedAt,
-                [lang]: element[lang],
-                _id: element._id
-            });  
+            result = await foundSubCategory(result, element, lang, subcategory);
         
         // Find only by command
         }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
-            const populatedSubCategories = await populateInCommands(element, lang);
-            result.push({ 
-                command: element.command,
-                subCategories: populatedSubCategories,
-                updatedAt: element.updatedAt,
-                [lang]: element[lang],
-                _id: element._id
-            });  
+            result = await foundSubCategory(result, element, lang, subcategory);
         
         // Find only by meaning
         }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
-            const populatedSubCategories = await populateInCommands(element, lang);
-            result.push({ 
-                command: element.command,
-                subCategories: populatedSubCategories,
-                updatedAt: element.updatedAt,
-                [lang]: element[lang],
-                _id: element._id
-            });  
+            result = await foundSubCategory(result, element, lang, subcategory);
         }
     }
 
@@ -291,7 +263,7 @@ const getCommandsWithSubCategoriesById = async(
     return res.json({
         status: "success",
         total,
-        results: newResult.length,
+        resultsForPage: newResult.length,
         page: newPage,
         limitPage,
         lang,
@@ -310,55 +282,28 @@ const getCommandsWithSubCategoriesByAllCategories = async(
         subcategory: string,
         res: any
     ) => {
-    const result: any = [];
+    let result: any = [];
     for(let i = 0; i < commandsFound.length; i++){
         const item = commandsFound[i];
         for(let j = 0; j < item.commands.length; j++){
             const element = item.commands[j];
+
             // Only find by category = all without queries
             if(!command && !meaning){
-                const populatedSubCategories = await populateInCommands(element, lang, subcategory);
-                result.push({ 
-                    command: element.command,
-                    subCategories: populatedSubCategories,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang],
-                    _id: element._id
-                });  
+                result = await foundSubCategory(result, element, lang, subcategory);
             
             // Find by command and meaning
             }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
             element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
-                const populatedSubCategories = await populateInCommands(element, lang);
-                result.push({ 
-                    command: element.command,
-                    subCategories: populatedSubCategories,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang],
-                    _id: element._id
-                });  
+                result = await foundSubCategory(result, element, lang, subcategory);
             
             // Find only by command
             }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
-                const populatedSubCategories = await populateInCommands(element, lang);
-                result.push({ 
-                    command: element.command,
-                    subCategories: populatedSubCategories,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang],
-                    _id: element._id
-                });  
+                result = await foundSubCategory(result, element, lang, subcategory);
             
             // Find only by meaning
             }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
-                const populatedSubCategories = await populateInCommands(element, lang);
-                result.push({ 
-                    command: element.command,
-                    subCategories: populatedSubCategories,
-                    updatedAt: element.updatedAt,
-                    [lang]: element[lang],
-                    _id: element._id
-                });  
+                result = await foundSubCategory(result, element, lang, subcategory); 
             }
         }
     }
@@ -377,10 +322,40 @@ const getCommandsWithSubCategoriesByAllCategories = async(
     return res.json({
         status: "success",
         total,
-        results: newResult.length,
+        resultsForPage: newResult.length,
         page: newPage,
         limitPage,
         lang,
         data: newResult
     });
+}
+
+/**
+ * Found subCategory and populate in commands
+ */
+const foundSubCategory = async(result: any, element: any, lang: string, subcategory: string) => {
+    const populatedSubCategories = await populateInCommands(element, lang, subcategory);
+    if(subcategory){
+        if(populatedSubCategories.find(e => e.found)){
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                [lang]: element[lang],
+                _id: element._id
+            });  
+            return result;
+        }else{
+            return result;
+        }
+    }else{
+        result.push({ 
+            command: element.command,
+            subCategories: populatedSubCategories,
+            updatedAt: element.updatedAt,
+            [lang]: element[lang],
+            _id: element._id
+        });
+        return result;  
+    }
 }
