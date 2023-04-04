@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import e, { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
 import { SubCategoriesModel } from "../subCategories/subCategories.model";
 import { httpCodes } from "../utils/constants";
@@ -14,14 +14,16 @@ import { CategoriesModel } from "./categories.model";
  *      category: [compulsory] with default 'all'. It must be id of MongoDB or 'all'
  *      commands: it's opcional and it can't be ""
  *      meaning: it's opcional and it can't be ""
+ *      subcategory: it's opcional, it has mongo’s id
  * Possiblities in queries
  *      ?category=any
  *      ?category=any&command=any
  *      ?category=any&meaning=any
  *      ?category=any&command=any&meaning=any
+ *      ?category=any&command=any&meaning=any&subcategory
  */
 export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
-    const {category, command, meaning, page} = req.query;
+    const {category, command, meaning, page, subcategory} = req.query;
     let newPage = +page || 1;
     let total = 0;
     const limitPage = 20;
@@ -35,7 +37,6 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
         return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
     }
     
-    let result: any[] = [];
     // 1º Case
     // If category = all
     if(category === "all"){
@@ -49,6 +50,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             newPage,
             total,
             limitPage,
+            subcategory,
             res
         );
 
@@ -66,6 +68,7 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
             newPage,
             total,
             limitPage,
+            subcategory,
             res
         ); 
     }
@@ -194,23 +197,40 @@ export const deleteCommand = catchAsync(async(req: Request, res: Response, next:
 ///////////////////
 // Useful functions
 ///////////////////
-const populateInCommands = async (command: any, lang: string) => {
+const populateInCommands = async (command: any, lang: string, subCategoryQueryParam?: string) => {
     const subCategories = [];
     const select = `_id ${lang} color`;
     if(command.subCategories?.length > 0){
         for(let i = 0; i < command.subCategories.length; i++){
-            const foundSubCategories = await SubCategoriesModel.findById(command.subCategories[i]).select(select);
+            const subCategory_id = command.subCategories[i];
+            const foundSubCategories = await SubCategoriesModel.findById(subCategory_id).select(select);
             subCategories.push(foundSubCategories)
         }
     }
-    return subCategories;
+    return subCategories.map((e: any) => {
+        if(e._id === subCategoryQueryParam){
+            return {...e, found: true}
+        }else{
+            return e;
+        }
+    });
 }
 
-const getCommandsWithSubCategoriesById = async(commandsFound: any, command: string, meaning: string, lang: string, newPage: number, total: number, limitPage: number, res: any) => {
+const getCommandsWithSubCategoriesById = async(
+        commandsFound: any,
+        command: string,
+        meaning: string,
+        lang: string,
+        newPage: number,
+        total: number,
+        limitPage: number,
+        subcategory: string,
+        res: any
+    ) => {
     const result: any = [];
     for( let i = 0; i < commandsFound.commands?.length; i++){
         const element = commandsFound.commands[i];
-        // Only find by category = all without queries
+        // Find without command && meaning
         if(!command && !meaning){
             const populatedSubCategories = await populateInCommands(element, lang);
             result.push({ 
@@ -224,7 +244,8 @@ const getCommandsWithSubCategoriesById = async(commandsFound: any, command: stri
         // Find by command and meaning
         }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
         element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
-            const populatedSubCategories = await populateInCommands(element, lang);
+            const populatedSubCategories = await populateInCommands(element, lang, subcategory);
+            console.log("populatedSubCategories: ", populatedSubCategories);
             result.push({ 
                 command: element.command,
                 subCategories: populatedSubCategories,
@@ -278,7 +299,17 @@ const getCommandsWithSubCategoriesById = async(commandsFound: any, command: stri
     });
 }
 
-const getCommandsWithSubCategoriesByAllCategories = async(commandsFound: any, command: string, meaning: string, lang: string, newPage: number, total: number, limitPage: number, res: any) => {
+const getCommandsWithSubCategoriesByAllCategories = async(
+        commandsFound: any,
+        command: string,
+        meaning: string,
+        lang: string,
+        newPage: number,
+        total: number,
+        limitPage: number,
+        subcategory: string,
+        res: any
+    ) => {
     const result: any = [];
     for(let i = 0; i < commandsFound.length; i++){
         const item = commandsFound[i];
@@ -286,7 +317,7 @@ const getCommandsWithSubCategoriesByAllCategories = async(commandsFound: any, co
             const element = item.commands[j];
             // Only find by category = all without queries
             if(!command && !meaning){
-                const populatedSubCategories = await populateInCommands(element, lang);
+                const populatedSubCategories = await populateInCommands(element, lang, subcategory);
                 result.push({ 
                     command: element.command,
                     subCategories: populatedSubCategories,
