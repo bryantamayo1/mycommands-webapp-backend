@@ -31,6 +31,12 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
                     _id: e._id
                 };
             });
+            // Add subCategory 'All' by default
+            subCategories.unshift({
+                [lang]: lang === "en"? "All" : "Todos",
+                color: "pink",
+                _id: "all"
+            })
         }
 
         return {

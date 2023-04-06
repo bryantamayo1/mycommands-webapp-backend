@@ -24,7 +24,8 @@ export const catchAsync = (fn: any) => {
  * It’s used in schema SubCategories
  */
 export const colorsEnum = [
-    "pink",
     "blue",
+    "green",
     "orange",
+    "pink",
 ];
