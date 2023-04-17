@@ -15,7 +15,7 @@ import { createFilter, deleteFilter, modificateFilter } from '../filters/filters
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 import http                         from 'http';  
 import { subCategoriesRouter }      from '../subCategories/subCategories.router';
-import { infoPageRouter } from '../infoPage/infoPage.router';
+import { infoPageRouter }           from '../infoPage/infoPage.router';
 const xss = require('xss-clean');
 
 export class Server{
