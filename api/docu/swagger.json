@@ -10,6 +10,9 @@
     "tags": [
         {
             "name": "Users"
+        },
+        {
+            "name": "Info page"
         }
     ],
     "paths": {
@@ -19,7 +22,7 @@
                     "Users"
                 ],
                 "summary": "Login",
-                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint",
+                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
                 "parameters": [
                     {
                         "in": "body",
@@ -83,7 +86,7 @@
                     "Users"
                 ],
                 "summary": "Create a user",
-                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint",
+                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
                 "parameters": [
                     {
                         "in": "body",
@@ -129,23 +132,23 @@
         },
         "/infopage": {
             "get": {
-                "description": "Increment count in 1 of count of views web page",
+                "tags": [
+                    "Info page"
+                ],
+                "description": "Increment count in 1 of count of views web page. Counters to each month.",
                 "responses": {
                     "200": {
-                        "description": "123",
-                       
-                       
-                                "schema": {
-                                    "id": {
-                                        "type": "string"
-                                    }
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string"
                                 }
-                            
-                        
+                            }
+                        }
                     }
                 }
             }
-
         }
     }
 }
