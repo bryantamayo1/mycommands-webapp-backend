@@ -13,6 +13,9 @@
         },
         {
             "name": "Info page"
+        },
+        {
+            "name": "Sub categories"
         }
     ],
     "paths": {
@@ -21,8 +24,8 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Login",
-                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "summary": "Login. Without token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
                 "parameters": [
                     {
                         "in": "body",
@@ -85,8 +88,8 @@
                 "tags": [
                     "Users"
                 ],
-                "summary": "Create a user",
-                "description": "Without token. Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "summary": "Create a user. Without token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
                 "parameters": [
                     {
                         "in": "body",
@@ -135,6 +138,7 @@
                 "tags": [
                     "Info page"
                 ],
+                "summary": "Increment the counter of views of the page. Without token.",
                 "description": "Increment count in 1 of count of views web page. Counters to each month.",
                 "responses": {
                     "200": {
@@ -143,6 +147,75 @@
                             "properties": {
                                 "status": {
                                     "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subcategories/{id_category}": {
+            "post": {
+                "tags": [
+                    "Sub categories"
+                ],
+                "summary": "Create a subcategory. With token.",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Create a subcategory. `id_category` is the id of sub category",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "en",
+                                "es",
+                                "color"
+                            ],
+                            "properties": {
+                                "en": {
+                                    "type": "string"
+                                },
+                                "es": {
+                                    "type": "string"
+                                },
+                                "color": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "en": {
+                                            "type": "string"
+                                        },
+                                        "es": {
+                                            "type": "string"
+                                        },
+                                        "color": {
+                                            "type": "string"
+                                        }
+                                    }
                                 }
                             }
                         }

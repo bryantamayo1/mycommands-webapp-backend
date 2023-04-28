@@ -22,6 +22,7 @@ export const SubCategoriesSchema = new Schema({
     color: {
         type: String,
         enum: colorsEnum,
+        required: true,
         maxLength: [100, "Maximum characters allowed 100"]
     }
 }, {
