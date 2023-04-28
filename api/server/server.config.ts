@@ -16,12 +16,15 @@ import { createCommand, deleteCommand, modificateCommand } from '../categories/c
 import http                         from 'http';  
 import { subCategoriesRouter }      from '../subCategories/subCategories.router';
 import { infoPageRouter }           from '../infoPage/infoPage.router';
+import swaggerUi                    from 'swagger-ui-express';
+import swaggerDocument              from '../docu/swagger.json';
 const xss = require('xss-clean');
+
 
 export class Server{
     app;
     server;
-    urlApi = "/api/v1"
+    urlApi = "/api/v1";
     constructor(){
         // Server
         this.app = express();
@@ -65,6 +68,9 @@ export class Server{
     }
             
     routes(){
+        // Dooc with Swagger
+        this.app.use(this.urlApi + '/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
         // We use PATH_ADMIN to protect routes only to admin
         // TODO: investigate why process.env.PATH_NAME doesn't work in router.ts
         // and obly works in server.config.ts
