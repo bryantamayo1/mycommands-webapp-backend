@@ -26,7 +26,14 @@ export const createCategory = catchAsync(async(req: any, res: Response, next: Ne
         owner: req.user._id,
         ...req.body
     });
-    foundCategory.subCategories.push(created._id);
-    await foundCategory.save();
-    return res.json(req.body);
+
+    await CategoriesModel.findByIdAndUpdate(id_category, {
+        "$push": {
+            "subCategories": created._id
+        }
+    });
+    return res.status(httpCodes.created).json({
+        status: "success",
+        data: req.body
+    });
 });

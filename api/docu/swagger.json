@@ -1,0 +1,810 @@
+
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Documentantion of My commands",
+        "description": "Created by Bryan Tamayo",
+        "version": "0.0.1"
+    },
+    "basePath": "/api/v1",
+    "tags": [
+        {
+            "name": "Users"
+        },
+        {
+            "name": "Info page"
+        },
+        {
+            "name": "Sub categories"
+        },
+        {
+            "name": "Commands"
+        },
+        {
+            "name": "Filters"
+        }
+    ],
+    "paths": {
+        "/users/login": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Login. Without token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "email",
+                                "password"
+                            ],
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "userName": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "rol": {
+                                            "type": "string",
+                                            "required": "true",
+                                            "enum" : [
+                                                "admin",
+                                                "user"
+                                            ]
+                                        },
+                                        "xen": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/register": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a user. Without token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "userName",
+                                "password",
+                                "passwordConfirm",
+                                "email"
+                            ],
+                            "properties": {
+                                "userName": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "passwordConfirm": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/infopage": {
+            "get": {
+                "tags": [
+                    "Info page"
+                ],
+                "summary": "Increment the counter of views of the page. Without token.",
+                "description": "Increment count in 1 of count of views web page. Counters to each month.",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/subcategories/{id_category}": {
+            "post": {
+                "tags": [
+                    "Sub categories"
+                ],
+                "summary": "Create a subcategory. With token.",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Create a subcategory. `id_category` is the id of sub category",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "en",
+                                "es",
+                                "color"
+                            ],
+                            "properties": {
+                                "en": {
+                                    "type": "string"
+                                },
+                                "es": {
+                                    "type": "string"
+                                },
+                                "color": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "en": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "es": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "color": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/commands/{lang}": {
+            "get": {
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Get commands. Without token",
+                "description": "Get commands by `lang`, and query params",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "lang",
+                        "schema": {
+                            "type" : "string",
+                            "enum": [
+                                "en",
+                                "es"
+                            ]
+                        },
+                        "description": "Page of pagination.",
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type" : "number"
+                        },
+                        "description": "Page of pagination",
+                        "default": 1
+                    },
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Category to search",
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "subcategory",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Sub category to search"
+                    },
+                    {
+                        "in": "query",
+                        "name": "command",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Command to search"
+                    },
+                    {
+                        "in": "query",
+                        "name": "meaning",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Meaning to search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "resultsForPage": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "limitPage": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "lang": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "required": "true",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "command": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "subCategories": {
+                                                "type": "array",
+                                                "description": "It can exist or not",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Id of mongo"
+                                                        },
+                                                        "lang": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                                        },
+                                                        "color": {
+                                                            "type": "string",
+                                                            "required": "true"
+                                                        },
+                                                        "found": {
+                                                            "type": "boolean",
+                                                            "required": "true"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "lang": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "_id": {
+                                                "type": "string",
+                                                "required": "true",
+                                                "description": "Id of mongo"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/commands/{id_category}": {
+            "post": {
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Create a command by id of category. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Create a command inside of their category `id_category`",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "command",
+                                "es",
+                                "en"
+                            ],
+                            "properties": {
+                                "command": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "en": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "es": {
+                                    "type": "string",
+                                    "required": "true"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/commands/{id_category}/{id_command}": {
+            "patch": {
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Modify a command by id of category and id of command. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Modify a command inside of their category `id_category` with their `id_command`",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "command",
+                                "es",
+                                "en"
+                            ],
+                            "properties": {
+                                "command": {
+                                    "type": "string"
+                                },
+                                "en": {
+                                    "type": "string"
+                                },
+                                "es": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "command": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "en": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "es": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Delete a command by id of category and id of command. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Delete a command inside of their category `id_category` with their `id_command`",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "example": "null"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/filters/{lang}": {
+            "get": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Get only categories and sub categories. Without token.",
+                "description": "Get categories, sub categories and the amount of total caommands",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "lang": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                },
+                                "totalCommands": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "results": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "required": "true",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "category": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "subCategories": {
+                                                "type": "array",
+                                                "description": "It can exist or not",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Id of mongo"
+                                                        },
+                                                        "lang": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                                        },
+                                                        "color": {
+                                                            "type": "string",
+                                                            "required": "true"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "version": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "results": {
+                                                "type": "number",
+                                                "required": "true"
+                                            },
+                                            "_id": {
+                                                "type": "string",
+                                                "required": "true",
+                                                "description": "Id of mongo"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/filters": {
+            "post": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Crea a new category. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "category",
+                                "version"
+                            ],
+                            "properties": {
+                                "category": {
+                                    "type": "string"
+                                },
+                                "version": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "category": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "version": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/filters/{id_category}": {
+            "patch": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Modify a category by his id. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Modify a category inside of their category `id_category`. \nOnly you can modify the category and version property",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string"
+                                },
+                                "version": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "category": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "version": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Delete a category. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Delete a category by his `id_category`",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "example": "null"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
