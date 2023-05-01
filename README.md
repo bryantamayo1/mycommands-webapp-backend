@@ -14,7 +14,12 @@
 <br/>
 
 ### Diagram UML
-![Diagram uml](/docs/diagram-uml.PNG) 
+![Diagram UML](/docs/diagram-uml.PNG) 
+<br/>
+<br/>
+
+### Documentation Swagger
+![Documentation Swagger](/docs/documentation_swagger.PNG) 
 
 ## Table of contents
 1. [About](#about)
