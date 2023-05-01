@@ -1,13 +1,21 @@
 # ![Logo](/docs/favicon-32x32.png) mycommands-webapp-backend
-> Backend of My commands web application built Typescript & Express & Mongo & AWS
+> Backend of My commands web application built Typescript & Express & Mongo & AWS. Link: https://mycommands.es
 
 <br/>
 
+### Home page
 ![Home page](/docs/home_page..PNG) 
 <br/>
 <br/>
 
+### Modal
 ![Modal](/docs/modal..PNG) 
+<br/>
+<br/>
+
+### Diagram UML
+![Diagram uml](/docs/diagram-uml.PNG) 
+
 ## Table of contents
 1. [About](#about)
 2. [Installation](#installation)
@@ -87,7 +95,10 @@ Response's format JSEND is used in whole project, to more information see [JSEND
     │   │    ├──  categories.model.ts       # model called 'category'
     │   │    └──  categories.router.ts      # with the endpoint searchCommands
     │   ├──  database                       # all files about data base
-    │   │    └──  database.config.ts        # Mongo’s config
+    │   │    ├──  database.config.ts        # Mongo’s config
+    │   │    └──  model-bbdd.puml           # Diagram UML of BBDD
+    │   ├──  docu                           # documentation
+    │   │    └──  swagger.json              # Configuration of Swagger
     │   ├──  filters                        # resource of filters
     │   │    ├──  filters.controller.ts     # filter’s controller and CRUD
     │   │    └──  filters.router.ts         # with the endpoint findFilters
