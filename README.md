@@ -18,8 +18,8 @@
 <br/>
 <br/>
 
-### Documentation Swagger
-![Documentation Swagger](/docs/documentation_swagger.PNG) 
+### Documentation Swagger v0.0.1
+![Documentation Swagger v0.0.1](/docs/documentation_swagger_v0_0_1.PNG) 
 
 ## Table of contents
 1. [About](#about)
