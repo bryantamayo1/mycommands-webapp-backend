@@ -109,7 +109,7 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
 /**
  * Modificate command by id of filters
  */
- export const modificateCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+ export const modificateCommand = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter, id_command} = req.params;
     const {command, en, es} = req.body;
 
@@ -124,34 +124,28 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
     if(!foundFilter){
         return next(new AppError("Filter not found", httpCodes.not_found));
     }
-    // 2) Find command
-    let commandFound: any = null;
-    foundFilter.commands?.forEach(item => {
-        // 3) Update one command
-        if(item._id?.toString() === id_command){
-            item.command = command? command : item.command;
-            item.en = en? en : item.en;
-            item.es = es? es : item.es;
-            commandFound = item;
-            return;
-        }
-    });
 
-    // 4) Command not found 
-    if(!commandFound){
-        return next(new AppError("Command not found", httpCodes.not_found));
+    // 2) Find command and update
+    const modifiedCategory = await CategoriesModel.findOneAndUpdate({
+        id_filter,
+        'commands._id': id_command
+    }, {
+        $set: {
+            'commands.$.command': command,
+            'commands.$.en': en,
+            'commands.$.es': es,
+        }
+    }, {
+        new: true
+    });
+    if(!modifiedCategory){
+        return next(new AppError("Coomand not found", httpCodes.not_found));
     }
-    // 5) Save command
-    await foundFilter.save();
-    // 6) Cean data
-    const commandModified = JSON.parse(JSON.stringify(commandFound));
-    delete commandModified.createdAt;
-    delete commandModified.updatedAt;
 
     return res.json({
         status: "success",
         data: {
-            ...commandModified
+            ok: "ok"
         }
     });
  });
