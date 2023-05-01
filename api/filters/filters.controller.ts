@@ -50,6 +50,7 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
 
     return res.json({
         status: "success",
+        lang,
         totalCommands,
         results: cleanData.length,
         data: cleanData
@@ -60,7 +61,10 @@ export const createFilter = catchAsync(async(req: any, res: Response, next: Next
     // Validations
     if(bodyIsEmpty(req.body)){
         return next(new AppError("Body is empty", httpCodes.bad_request));
+    }else if(!req.body.category || !req.body.version){
+        return next(new AppError("Category and version are compulsories", httpCodes.bad_request));
     }
+
     const newFilter = await CategoriesModel.create({
         owner: req.user._id,
         ...req.body,

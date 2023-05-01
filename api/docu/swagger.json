@@ -330,7 +330,8 @@
                                 },
                                 "lang": {
                                     "type": "string",
-                                    "required": "true"
+                                    "required": "true",
+                                    "description": "It is the language `lang` path with the commands in their corresponding languaje"
                                 },
                                 "data": {
                                     "type": "array",
@@ -343,8 +344,31 @@
                                                 "required": "true"
                                             },
                                             "subCategories": {
-                                                "type": "string",
-                                                "description": "It can exist or not"
+                                                "type": "array",
+                                                "description": "It can exist or not",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Id of mongo"
+                                                        },
+                                                        "lang": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                                        },
+                                                        "color": {
+                                                            "type": "string",
+                                                            "required": "true"
+                                                        },
+                                                        "found": {
+                                                            "type": "boolean",
+                                                            "required": "true"
+                                                        }
+                                                    }
+                                                }
                                             },
                                             "updatedAt": {
                                                 "type": "string",
@@ -356,7 +380,8 @@
                                             },
                                             "_id": {
                                                 "type": "string",
-                                                "required": "true"
+                                                "required": "true",
+                                                "description": "Id of mongo"
                                             }
                                         }
                                     }
@@ -526,7 +551,92 @@
                                 },
                                 "data": {
                                     "type": "string",
+                                    "required": "true",
+                                    "example": "null"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/filters/{lang}": {
+            "get": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Get only categories and sub categories. Without token.",
+                "description": "Get categories, sub categories and the amount of total caommands",
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
                                     "required": "true"
+                                },
+                                "lang": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                },
+                                "totalCommands": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "results": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "required": "true",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "category": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "subCategories": {
+                                                "type": "array",
+                                                "description": "It can exist or not",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Id of mongo"
+                                                        },
+                                                        "lang": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                                        },
+                                                        "color": {
+                                                            "type": "string",
+                                                            "required": "true"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "version": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "results": {
+                                                "type": "number",
+                                                "required": "true"
+                                            },
+                                            "_id": {
+                                                "type": "string",
+                                                "required": "true",
+                                                "description": "Id of mongo"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -535,7 +645,166 @@
             }
         },
         "/filters": {
-
+            "post": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Crea a new category. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "required": [
+                                "category",
+                                "version"
+                            ],
+                            "properties": {
+                                "category": {
+                                    "type": "string"
+                                },
+                                "version": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "category": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "version": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/filters/{id_category}": {
+            "patch": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Modify a category by his id. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Modify a category inside of their category `id_category`. \nOnly you can modify the category and version property",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string"
+                                },
+                                "version": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "object",
+                                    "properties": {
+                                        "category": {
+                                            "type": "string",
+                                            "required": "true"
+                                        },
+                                        "version": {
+                                            "type": "string",
+                                            "required": "true"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Filters"
+                ],
+                "summary": "Delete a category. With token",
+                "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint. Delete a category by his `id_category`",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "data": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "example": "null"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
