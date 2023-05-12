@@ -10,3 +10,12 @@ export const httpCodes = {
     not_found: 404,
     internal_server_error: 500
 }
+
+export const languages = [
+    'js',
+    'sql',
+    'jsx',
+    'txs',
+    'css',
+    'bash',
+];

@@ -1,10 +1,16 @@
 import { Schema } from "mongoose";
+import { languages } from "../utils/constants";
 
 export const CommandsSchema = new Schema({
     command: {
         type: String,
         required: [true, "command is compulsory"],
         trim: true
+    },
+    language: {
+        type: String,
+        enum: languages,
+        required: [true, "language is compulsory"],
     },
     en: {
         type: String,
