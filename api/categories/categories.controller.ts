@@ -37,14 +37,6 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
         return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
     }
     
-    // test
-    let found_test: any = await CategoriesModel.findById(category);
-    found_test.commands.forEach((element: any) => {
-        element.language = "sql";
-    });
-    await found_test.save();
-    console.log(found_test.commands)
-    
     // 1º Case
     // If category = all
     if(category === "all"){
