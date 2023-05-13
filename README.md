@@ -19,6 +19,7 @@
 <br/>
 
 ### Documentation Swagger v0.0.1
+[Docs with Swagger](https://mycommands.es/api/v1/api-docs/)
 ![Documentation Swagger v0.0.1](/docs/documentation_swagger_v0_0_1.PNG) 
 
 ## Table of contents

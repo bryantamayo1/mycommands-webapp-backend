@@ -27,6 +27,7 @@ end note
 
 class commands{
     -command: String
+    -language: enum
     -es: String
     -en: String
     -owner [id of UsersSchema]: String
