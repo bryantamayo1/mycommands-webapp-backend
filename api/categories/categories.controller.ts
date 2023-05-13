@@ -1,7 +1,7 @@
 import e, { Request, Response, NextFunction } from "express";
 import { AppError } from "../manage-errors/AppError";
 import { SubCategoriesModel } from "../subCategories/subCategories.model";
-import { httpCodes } from "../utils/constants";
+import { httpCodes, languages } from '../utils/constants';
 import { bodyIsEmpty, catchAsync } from "../utils/utils";
 import { CategoriesModel } from "./categories.model";
 
@@ -335,6 +335,7 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 command: element.command,
                 subCategories: populatedSubCategories,
                 updatedAt: element.updatedAt,
+                language: element.language,
                 [lang]: element[lang],
                 _id: element._id
             });  
@@ -346,6 +347,7 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
         result.push({ 
             command: element.command,
             subCategories: populatedSubCategories,
+            language: element.language,
             updatedAt: element.updatedAt,
             [lang]: element[lang],
             _id: element._id
