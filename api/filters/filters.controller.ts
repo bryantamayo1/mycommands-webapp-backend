@@ -43,6 +43,8 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
             category: item.category,
             subCategories: subCategories,
             version: item.version,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt,
             results: item.commands.length,
             _id: item._id
         }

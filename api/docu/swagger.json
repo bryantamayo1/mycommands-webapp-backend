@@ -626,6 +626,14 @@
                                                 "type": "string",
                                                 "required": "true"
                                             },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
                                             "results": {
                                                 "type": "number",
                                                 "required": "true"
