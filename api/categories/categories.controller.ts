@@ -335,6 +335,7 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 command: element.command,
                 subCategories: populatedSubCategories,
                 updatedAt: element.updatedAt,
+                createdAt: element.createdAt,
                 language: element.language,
                 [lang]: element[lang],
                 _id: element._id
@@ -349,6 +350,7 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
             subCategories: populatedSubCategories,
             language: element.language,
             updatedAt: element.updatedAt,
+            createdAt: element.createdAt,
             [lang]: element[lang],
             _id: element._id
         });
