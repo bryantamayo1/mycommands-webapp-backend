@@ -50,6 +50,14 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
         }
     });
 
+    // Store category by defualt 'All'
+    cleanData.unshift({
+        category: lang === "en"? "All" : "Todas",
+        results: totalCommands,
+        // @ts-ignore
+        _id: "all"
+    });
+
     return res.json({
         status: "success",
         lang,
