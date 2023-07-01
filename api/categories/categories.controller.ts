@@ -222,8 +222,16 @@ const getCommandsWithSubCategoriesById = async(
         res: any
     ) => {
     let result: any = [];
+    // Loop in commands
     for( let i = 0; i < commandsFound.commands?.length; i++){
         const element = commandsFound.commands[i];
+
+        // Add category father
+        element.categoryFather = {
+            _id: commandsFound._id,
+            category: commandsFound.category,
+            version: commandsFound.version,
+        }
 
         // Find without command && meaning
         if(!command && !meaning){
@@ -277,10 +285,19 @@ const getCommandsWithSubCategoriesByAllCategories = async(
         res: any
     ) => {
     let result: any = [];
+
     for(let i = 0; i < commandsFound.length; i++){
         const item = commandsFound[i];
-        for(let j = 0; j < item.commands.length; j++){
+        // Loop in commands
+        for(let j = 0; j < item.commands?.length; j++){
             const element = item.commands[j];
+
+            // Add category father
+            element.categoryFather = {
+                _id: item._id,
+                category: item.category,
+                version: item.version,
+            }
 
             // Only find by category = all without queries
             if(!command && !meaning){
@@ -326,6 +343,7 @@ const getCommandsWithSubCategoriesByAllCategories = async(
 
 /**
  * Found subCategory and populate in commands
+ * Furthermore, add info of category father
  */
 const foundSubCategory = async(result: any, element: any, lang: string, subcategory: string) => {
     const populatedSubCategories = await populateInCommands(element, lang, subcategory);
@@ -338,6 +356,7 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 createdAt: element.createdAt,
                 language: element.language,
                 [lang]: element[lang],
+                categoryFather: element.categoryFather,
                 _id: element._id
             });  
             return result;
@@ -348,10 +367,11 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
         result.push({ 
             command: element.command,
             subCategories: populatedSubCategories,
-            language: element.language,
             updatedAt: element.updatedAt,
             createdAt: element.createdAt,
+            language: element.language,
             [lang]: element[lang],
+            categoryFather: element.categoryFather,
             _id: element._id
         });
         return result;  
