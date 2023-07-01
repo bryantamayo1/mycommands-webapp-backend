@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import bcrypt from 'bcryptjs';
+import { userRoles } from "../utils/constants";
 
 // any to avoid type method checkPassword
 const UsersSchema = new Schema<any>({
@@ -26,9 +27,9 @@ const UsersSchema = new Schema<any>({
         minLength: [8, "Password must have more 7 characters"],
         select: false
     },
-    rol: {
+    role: {
         type: String,
-        enum: ["admin", "user"],
+        enum: [userRoles.ADMIN, userRoles.USER, userRoles.GUEST],
         default: "user"
     }
 }, {
