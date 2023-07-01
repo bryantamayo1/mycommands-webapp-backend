@@ -1,10 +1,10 @@
-import { Response, NextFunction } from "express";
-import jwt from 'jsonwebtoken';
-import { promisify } from 'util';
-import { AppError } from "../manage-errors/AppError";
-import { UsersModel } from "../users/users.models";
-import { httpCodes } from '../utils/constants';
-import { catchAsync } from "../utils/utils";
+import { Response, NextFunction }   from "express";
+import jwt                          from 'jsonwebtoken';
+import { promisify }                from 'util';
+import { AppError }                 from "../manage-errors/AppError";
+import { UsersModel }               from "../users/users.models";
+import { httpCodes, userRoles }     from '../utils/constants';
+import { catchAsync }               from "../utils/utils";
 
 /**
  * Check token of FE and getting info of user
@@ -31,5 +31,14 @@ export const validateToken = catchAsync(async(req: any, res: Response, next: Nex
 
     // Store user to use next routes
     req.user = currentUser;
+    next();
+});
+
+export const controlRoleUser = catchAsync(async(req: any, res: Response, next: NextFunction) => {
+    // 1ª Get role of user
+    const role = req.user.role;
+    if(role === userRoles.GUEST){
+        return next(new AppError("Action forbidden", httpCodes.forbidden));
+    }
     next();
 });

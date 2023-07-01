@@ -10,7 +10,7 @@ import cors                         from 'cors';
 import { AppError }                 from '../manage-errors/AppError';
 import helmet                       from 'helmet';
 import ExpressMongoSanitize         from 'express-mongo-sanitize';
-import { validateToken }            from '../auth/auth';
+import { controlRoleUser, validateToken }            from '../auth/auth';
 import { createFilter, deleteFilter, modificateFilter } from '../filters/filters.controller';
 import { createCommand, deleteCommand, modificateCommand } from '../categories/categories.controller';
 import http                         from 'http';  
@@ -80,16 +80,16 @@ export class Server{
         this.app.use(this.urlApi + "/commands", categoriesRouter);
         this.app.use(this.urlApi + "/filters", filtersRouter);
 
-        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter`, validateToken, createCommand);
-        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter/:id_command`, validateToken, modificateCommand);
-        this.app.delete(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter/:id_command`, validateToken, deleteCommand);
+        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter`, validateToken, controlRoleUser, createCommand);
+        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter/:id_command`, validateToken, controlRoleUser, modificateCommand);
+        this.app.delete(`${this.urlApi}${process.env.PATH_ADMIN}/commands/:id_filter/:id_command`, validateToken, controlRoleUser, deleteCommand);
 
-        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/filters`, validateToken, createFilter);
-        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, modificateFilter);
-        this.app.delete(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, deleteFilter);
+        this.app.post(`${this.urlApi}${process.env.PATH_ADMIN}/filters`, validateToken, controlRoleUser, createFilter);
+        this.app.patch(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, controlRoleUser, modificateFilter);
+        this.app.delete(`${this.urlApi}${process.env.PATH_ADMIN}/filters/:id_filter`, validateToken, controlRoleUser, deleteFilter);
 
         // CRUD Subcategories
-        this.app.use(`${this.urlApi}${process.env.PATH_ADMIN}/subcategories`, validateToken, subCategoriesRouter);
+        this.app.use(`${this.urlApi}${process.env.PATH_ADMIN}/subcategories`, validateToken, controlRoleUser, subCategoriesRouter);
         
         // Manage any router don't mention before
         this.app.all("*", (req, res, next: NextFunction) => {

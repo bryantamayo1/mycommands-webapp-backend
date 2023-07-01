@@ -20,3 +20,9 @@ export const languages = Object.freeze([
     'css',
     'bash',
 ]);
+
+export enum userRoles{
+    ADMIN = "ADMIN",
+    USER = "USER",
+    GUEST = "GUEST",
+}
