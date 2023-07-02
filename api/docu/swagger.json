@@ -339,6 +339,24 @@
                                     "items": {
                                         "type": "object",
                                         "properties": {
+                                            "categoryFather": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "string",
+                                                        "required": "true",
+                                                        "description": "Id of mongo"
+                                                    },
+                                                    "version": {
+                                                        "type": "string",
+                                                        "required": "true"
+                                                    },
+                                                    "category": {
+                                                        "type": "string",
+                                                        "required": "true"
+                                                    }
+                                                }
+                                            },
                                             "command": {
                                                 "type": "string",
                                                 "required": "true"
@@ -374,14 +392,23 @@
                                                 "type": "string",
                                                 "required": "true"
                                             },
-                                            "lang": {
+                                            "language": {
                                                 "type": "string",
-                                                "required": "true"
+                                                "required": "true",
+                                                "description": "It can be sql, css, ..."
                                             },
                                             "_id": {
                                                 "type": "string",
                                                 "required": "true",
                                                 "description": "Id of mongo"
+                                            },
+                                            "en": {
+                                                "type": "string",
+                                                "description": "It can be en or es"
+                                            },
+                                            "es": {
+                                                "type": "string",
+                                                "description": "It can be en or es"
                                             }
                                         }
                                     }
@@ -431,6 +458,11 @@
                                 "es": {
                                     "type": "string",
                                     "required": "true"
+                                },
+                                "language": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "description": "It can be sql, css, ..."
                                 }
                             }
                         }
