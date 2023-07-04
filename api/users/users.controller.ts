@@ -36,7 +36,7 @@ export const login = catchAsync(async (req: any, res: Response, next: NextFuncti
 });
 
 export const register = catchAsync(async(req: Request, res: Response, next: any) => {
-    const {userName, email, password, passwordConfirm} = req.body;
+    const {userName, email, password, passwordConfirm, role} = req.body;
     
     // Validations
     if(bodyIsEmpty(req.body)){
@@ -59,7 +59,8 @@ export const register = catchAsync(async(req: Request, res: Response, next: any)
         userName,
         email,
         password,
-        passwordConfirm
+        passwordConfirm,
+        role
     });
     return res.status(httpCodes.created).json({
         status: "success",
