@@ -26,3 +26,18 @@ export enum userRoles{
     USER = "USER",
     GUEST = "GUEST",
 }
+
+/**
+ * It’s used in schema SubCategories
+ */
+export const colorsEnum = [
+    "blue",
+    "green",
+    "orange",
+    "pink",
+];
+
+export const errorMessages = Object.freeze({
+    500: "more 500 characters aren’t allowed",
+    100: "more 100 characters aren’t allowed",
+});

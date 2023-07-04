@@ -1,18 +1,18 @@
 import { model, Schema } from "mongoose";
-import { colorsEnum } from "../utils/utils";
+import { colorsEnum, errorMessages } from "../utils/constants";
 
 export const SubCategoriesSchema = new Schema({
     en: {
         type: String,
         required: [true, "en is compulsory"],
         trim: true,
-        maxLength: [100, "Maximum characters allowed 100"]
+        maxLength: [100, errorMessages[100]],     // Including 500 characters
     },
     es: {
         type: String,
         required: [true, "es is compulsory"],
         trim: true,
-        maxLength: [100, "Maximum characters allowed 100"]
+        maxLength: [100, errorMessages[100]],     // Including 500 characters
     },
     owner: {
         type: String,
@@ -23,7 +23,7 @@ export const SubCategoriesSchema = new Schema({
         type: String,
         enum: colorsEnum,
         required: true,
-        maxLength: [100, "Maximum characters allowed 100"]
+        maxLength: [100, errorMessages[100]],     // Including 500 characters
     }
 }, {
     timestamps: true

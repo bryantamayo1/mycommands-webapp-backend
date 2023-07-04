@@ -1,17 +1,18 @@
 import {Schema, model} from 'mongoose';
 import { CommandsSchema } from '../commands/commands.model';
+import { errorMessages } from '../utils/constants';
 
 const CategoriesSchema = new Schema({
     category: {
         type: String,
         required: [true, "category is compulsory"],
-        maxLength: 100,     // Including 100 characters
+        maxLength: [100, errorMessages[100]],     // Including 500 characters
         trim: true
     },
     version: {
         type: String,
         required: [true, "version is compulsory"],
-        maxLength: 100,     // Including 100 characters
+        maxLength: [100, errorMessages[100]],     // Including 500 characters
         trim: true
     },
     commands: {
