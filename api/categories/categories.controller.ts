@@ -22,7 +22,7 @@ import { CategoriesModel } from "./categories.model";
  *      ?category=any&command=any&meaning=any
  *      ?category=any&command=any&meaning=any&subcategory
  */
-export const searchCommands = catchAsync(async(req: any, res: Response, next: NextFunction) => {
+export const searchCommandsByLanguage = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {category, command, meaning, page, subcategory} = req.query;
     let newPage = +page || 1;
     let total = 0;
@@ -35,6 +35,53 @@ export const searchCommands = catchAsync(async(req: any, res: Response, next: Ne
     }
     if(!(lang === "en" || lang === "es")){
         return next(new AppError("Query lan can be 'en' or 'es'", httpCodes.bad_request));
+    }
+    
+    // 1º Case
+    // If category = all
+    if(category === "all"){
+        let found = await CategoriesModel.find();
+        const commandsFound = JSON.parse(JSON.stringify(found));
+        return getCommandsWithSubCategoriesByAllCategories(
+            commandsFound,
+            command,
+            meaning,
+            lang,
+            newPage,
+            total,
+            limitPage,
+            subcategory,
+            res
+        );
+
+    // 2º Case
+    }else{
+        let found: any = await CategoriesModel.findById(category);
+        const commandsFound = JSON.parse(JSON.stringify(found));
+        // All in one buffer, is easer to work
+        return getCommandsWithSubCategoriesById(
+            commandsFound,
+            command,
+            meaning,
+            lang,
+            newPage,
+            total,
+            limitPage,
+            subcategory,
+            res
+        ); 
+    }
+});
+
+export const searchCommandsGeneral = catchAsync(async(req: any, res: Response, next: NextFunction) => {
+    const {category, command, meaning, page, subcategory} = req.query;
+    let newPage = +page || 1;
+    let total = 0;
+    const limitPage = 20;
+    const lang = "";    // Like null or undefined
+    // Validations
+    if(!category || command === "" || meaning === ""){
+        return next(new AppError("Error queries", httpCodes.bad_request));
     }
     
     // 1º Case
@@ -192,7 +239,7 @@ export const deleteCommand = catchAsync(async(req: Request, res: Response, next:
 ///////////////////
 const populateInCommands = async (command: any, lang: string, subCategoryQueryParam?: string) => {
     const subCategories = [];
-    const select = `_id ${lang} color`;
+    const select = lang? `_id ${lang} color` : "_id color";
     if(command.subCategories?.length > 0){
         for(let i = 0; i < command.subCategories.length; i++){
             const subCategory_id = command.subCategories[i];
@@ -237,18 +284,29 @@ const getCommandsWithSubCategoriesById = async(
         if(!command && !meaning){
             result = await foundSubCategory(result, element, lang, subcategory);
         
-        // Find by command and meaning
+        // Find by command or meaning and only one language
         }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
         element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
             result = await foundSubCategory(result, element, lang, subcategory);
         
+        // Find by command or meaning and without language
+        }else if(command && meaning && !lang && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+        element["en"].toLowerCase().includes( meaning.toLowerCase() ) || element["es"].toLowerCase().includes( meaning.toLowerCase() ))){
+            result = await foundSubCategory(result, element, lang, subcategory);
+
         // Find only by command
         }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
             result = await foundSubCategory(result, element, lang, subcategory);
         
-        // Find only by meaning
-        }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+        // Find only by meaning and only one language
+        }else if(meaning && lang && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
             result = await foundSubCategory(result, element, lang, subcategory);
+        
+        // Find only by meaning and without language
+        }else if(meaning && !lang &&
+            (element["en"].toLowerCase().includes( meaning.toLowerCase()) ||
+            element["es"].toLowerCase().includes( meaning.toLowerCase()) )){
+            result = await foundSubCategory(result, element, lang, subcategory); 
         }
     }
 
@@ -285,7 +343,6 @@ const getCommandsWithSubCategoriesByAllCategories = async(
         res: any
     ) => {
     let result: any = [];
-
     for(let i = 0; i < commandsFound.length; i++){
         const item = commandsFound[i];
         // Loop in commands
@@ -298,22 +355,33 @@ const getCommandsWithSubCategoriesByAllCategories = async(
                 category: item.category,
                 version: item.version,
             }
-
+      
             // Only find by category = all without queries
             if(!command && !meaning){
                 result = await foundSubCategory(result, element, lang, subcategory);
             
-            // Find by command and meaning
-            }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+            // Find by command or meaning and only one language
+            }else if ( command && meaning && lang && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
             element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
+            result = await foundSubCategory(result, element, lang, subcategory);
+            
+            // Find by command or meaning and without language
+            }else if(command && meaning && !lang && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+            element["en"].toLowerCase().includes( meaning.toLowerCase() ) || element["es"].toLowerCase().includes( meaning.toLowerCase() ))){
                 result = await foundSubCategory(result, element, lang, subcategory);
             
             // Find only by command
             }else if(command && element.command.toLowerCase().includes( command.toLowerCase() )){
                 result = await foundSubCategory(result, element, lang, subcategory);
             
-            // Find only by meaning
-            }else if(meaning && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+            // Find only by meaning and only one language
+            }else if(meaning && lang && element[lang].toLowerCase().includes( meaning.toLowerCase() )){
+                result = await foundSubCategory(result, element, lang, subcategory); 
+            
+            // Find only by meaning and without language
+            }else if(meaning && !lang &&
+                (element["en"].toLowerCase().includes( meaning.toLowerCase()) ||
+                element["es"].toLowerCase().includes( meaning.toLowerCase()) )){
                 result = await foundSubCategory(result, element, lang, subcategory); 
             }
         }
@@ -349,6 +417,37 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
     const populatedSubCategories = await populateInCommands(element, lang, subcategory);
     if(subcategory){
         if(populatedSubCategories.find(e => e.found)){
+            if(lang){
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    createdAt: element.createdAt,
+                    language: element.language,
+                    [lang]: element[lang],
+                    categoryFather: element.categoryFather,
+                    _id: element._id
+                });  
+            }else{
+                result.push({ 
+                    command: element.command,
+                    subCategories: populatedSubCategories,
+                    updatedAt: element.updatedAt,
+                    createdAt: element.createdAt,
+                    language: element.language,
+                    en: element["en"],
+                    es: element["es"],
+                    categoryFather: element.categoryFather,
+                    _id: element._id
+                });  
+
+            }
+            return result;
+        }else{
+            return result;
+        }
+    }else{
+        if(lang){
             result.push({ 
                 command: element.command,
                 subCategories: populatedSubCategories,
@@ -358,22 +457,20 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 [lang]: element[lang],
                 categoryFather: element.categoryFather,
                 _id: element._id
-            });  
-            return result;
+            });
         }else{
-            return result;
+            result.push({ 
+                command: element.command,
+                subCategories: populatedSubCategories,
+                updatedAt: element.updatedAt,
+                createdAt: element.createdAt,
+                language: element.language,
+                en: element["en"],
+                es: element["es"],
+                categoryFather: element.categoryFather,
+                _id: element._id
+            });
         }
-    }else{
-        result.push({ 
-            command: element.command,
-            subCategories: populatedSubCategories,
-            updatedAt: element.updatedAt,
-            createdAt: element.createdAt,
-            language: element.language,
-            [lang]: element[lang],
-            categoryFather: element.categoryFather,
-            _id: element._id
-        });
         return result;  
     }
 }
