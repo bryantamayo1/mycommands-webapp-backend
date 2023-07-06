@@ -248,12 +248,184 @@
                 }
             }
         },
+        "/commands": {
+            "get": {
+                "tags": [
+                    "Commands"
+                ],
+                "summary": "Get commands. Without token neither language",
+                "description": "Get commands by query params",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "schema": {
+                            "type" : "number"
+                        },
+                        "description": "Page of pagination",
+                        "default": 1
+                    },
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Category to search",
+                        "required": "true"
+                    },
+                    {
+                        "in": "query",
+                        "name": "subcategory",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Sub category to search"
+                    },
+                    {
+                        "in": "query",
+                        "name": "command",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Command to search"
+                    },
+                    {
+                        "in": "query",
+                        "name": "meaning",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "description": "Meaning to search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "required": "true"
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "resultsForPage": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "page": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "limitPage": {
+                                    "type": "number",
+                                    "required": "true"
+                                },
+                                "lang": {
+                                    "type": "string",
+                                    "required": "true",
+                                    "description": "It is the language `lang` path with the commands in their corresponding languaje"
+                                },
+                                "data": {
+                                    "type": "array",
+                                    "required": "true",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "categoryFather": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "string",
+                                                        "required": "true",
+                                                        "description": "Id of mongo"
+                                                    },
+                                                    "version": {
+                                                        "type": "string",
+                                                        "required": "true"
+                                                    },
+                                                    "category": {
+                                                        "type": "string",
+                                                        "required": "true"
+                                                    }
+                                                }
+                                            },
+                                            "command": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "subCategories": {
+                                                "type": "array",
+                                                "description": "It can exist or not",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "_id": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Id of mongo"
+                                                        },
+                                                        "en": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Language english"
+                                                        },
+                                                        "es": {
+                                                            "type": "string",
+                                                            "required": "true",
+                                                            "description": "Language spanish"
+                                                        },
+                                                        "color": {
+                                                            "type": "string",
+                                                            "required": "true"
+                                                        },
+                                                        "found": {
+                                                            "type": "boolean",
+                                                            "required": "true"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "required": "true"
+                                            },
+                                            "language": {
+                                                "type": "string",
+                                                "required": "true",
+                                                "description": "It can be sql, css, ..."
+                                            },
+                                            "_id": {
+                                                "type": "string",
+                                                "required": "true",
+                                                "description": "Id of mongo"
+                                            },
+                                            "en": {
+                                                "type": "string",
+                                                "description": "Language english"
+                                            },
+                                            "es": {
+                                                "type": "string",
+                                                "description": "Language spanish"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/commands/{lang}": {
             "get": {
                 "tags": [
                     "Commands"
                 ],
-                "summary": "Get commands. Without token",
+                "summary": "Get commands. Without token and with language",
                 "description": "Get commands by `lang`, and query params",
                 "parameters": [
                     {
