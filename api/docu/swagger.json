@@ -102,6 +102,15 @@
                 "description": "Prevously, put {process.env.PATH_ADMIN}/api/v1 in the endpoint.",
                 "parameters": [
                     {
+                        "in": "header",
+                        "name": "xen",
+                        "schema": {
+                            "type" : "string"
+                        },
+                        "required": "true",
+                        "default": "Bearer my_token"
+                    },
+                    {
                         "in": "body",
                         "name": "body",
                         "schema": {
