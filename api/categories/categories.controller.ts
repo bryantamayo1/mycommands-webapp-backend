@@ -204,29 +204,24 @@ export const deleteCommand = catchAsync(async(req: Request, res: Response, next:
     const {id_filter, id_command} = req.params;
     // Validations
     if(!id_filter && !id_command){
-        return next(new AppError("id_filter and id_command don't exist", httpCodes.bad_request));   
+        return next(new AppError("id_filter and id_command don't exist. F1", httpCodes.bad_request));   
     }else{
-        // Steps to delete one command
-        // 1) Find filter
-        const foundFilter = await CategoriesModel.findById(id_filter);
-        if(!foundFilter){
-            return next(new AppError("Filter not found", httpCodes.not_found));
+        // 1º Finc category
+        const found = await CategoriesModel.findById(id_filter);
+        if(!found){
+            return next(new AppError("id_filter and id_command don't exist. F2", httpCodes.bad_request));   
         }
-
-        // 2) Find command
-        let indexCmmandFound: any = -1;
-        indexCmmandFound = foundFilter.commands?.findIndex((item: any) => item._id?.toString() === id_command);
-
-        // 3) Command not found 
-        if(indexCmmandFound === -1){
-            return next(new AppError("Command not found", httpCodes.not_found));
+        if(found.commands.length === 0 || !found.commands.find(item => item._id?.toString() === id_command)){
+            return next(new AppError("id_filter and id_command don't exist. F3", httpCodes.bad_request));   
         }
-
-        // 4) Delete command
-        foundFilter.commands.splice(indexCmmandFound, indexCmmandFound);
-
-        // 5) Save command
-        await foundFilter.save();
+        CategoriesModel.updateMany({ _id: id_filter},
+            {
+                $pull: {
+                    commands: {_id: id_command}
+                }    
+            }
+        );
+        
         return res.json({
             status: "success",
             data: null
