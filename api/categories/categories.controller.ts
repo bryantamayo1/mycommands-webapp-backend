@@ -421,7 +421,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                     language: element.language,
                     [lang]: element[lang],
                     categoryFather: element.categoryFather,
-                    _id: element._id
+                    _id: element._id,
+                    owner: element.owner
                 });  
             }else{
                 result.push({ 
@@ -433,7 +434,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                     en: element["en"],
                     es: element["es"],
                     categoryFather: element.categoryFather,
-                    _id: element._id
+                    _id: element._id,
+                    owner: element.owner
                 });  
 
             }
@@ -451,7 +453,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 language: element.language,
                 [lang]: element[lang],
                 categoryFather: element.categoryFather,
-                _id: element._id
+                _id: element._id,
+                owner: element.owner
             });
         }else{
             result.push({ 
@@ -463,7 +466,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 en: element["en"],
                 es: element["es"],
                 categoryFather: element.categoryFather,
-                _id: element._id
+                _id: element._id,
+                owner: element.owner
             });
         }
         return result;  

@@ -24,7 +24,7 @@ export const login = catchAsync(async (req: any, res: Response, next: NextFuncti
     const token = await promisify(jwt.sign)({id: user.id}, process.env.KEY_JWT!, {expiresIn: process.env.EXPIRE_TIME_JWT});
     const newUser = JSON.parse(JSON.stringify(user));
     delete newUser.password;
-    delete newUser._id;
+    // delete newUser._id;
 
     return res.json({
         status: "success",
