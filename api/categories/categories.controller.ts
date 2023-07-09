@@ -280,7 +280,7 @@ const getCommandsWithSubCategoriesById = async(
             result = await foundSubCategory(result, element, lang, subcategory);
         
         // Find by command or meaning and only one language
-        }else if ( command && meaning && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
+        }else if ( command && meaning && lang && (element.command.toLowerCase().includes( command.toLowerCase() ) ||
         element[lang].toLowerCase().includes( meaning.toLowerCase() ))){
             result = await foundSubCategory(result, element, lang, subcategory);
         
