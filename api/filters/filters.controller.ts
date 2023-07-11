@@ -28,14 +28,17 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
                 return {
                     [lang]: e[lang],
                     color: e.color,
-                    _id: e._id
+                    _id: e._id,
+                    // @ts-ignore
+                    owner: e.owner
                 };
             });
             // Add subCategory 'All' by default
             subCategories.unshift({
                 [lang]: lang === "en"? "All" : "Todos",
                 color: "pink",
-                _id: "all"
+                _id: "all",
+                owner: 'everybody'
             })
         }
 
@@ -46,7 +49,8 @@ import { updateCounterPage } from "../infoPage/infoPage.controller";
             createdAt: item.createdAt,
             updatedAt: item.updatedAt,
             results: item.commands.length,
-            _id: item._id
+            _id: item._id,
+            owner: item.owner
         }
     });
 
@@ -93,7 +97,7 @@ export const createFilter = catchAsync(async(req: any, res: Response, next: Next
 /**
  * Update one filter by category and version
  */
-export const modificateFilter = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+export const modificateFilter = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter} = req.params;
     const {category, version} = req.body;
     let properties = {}
@@ -105,6 +109,12 @@ export const modificateFilter = catchAsync(async(req: Request, res: Response, ne
         return next(new AppError("Error E1", httpCodes.bad_request));
     }else if(category && version){
         properties = {category, version}
+    }
+
+    // Check owner of item
+    const ifMyItem = await CategoriesModel.findOne({ _id: id_filter, owner: req.user._id.toString()});
+    if(!ifMyItem){
+        return next(new AppError("Action not allowed", httpCodes.forbidden));
     }
 
     const found = await CategoriesModel.findByIdAndUpdate(id_filter,
@@ -130,7 +140,7 @@ export const modificateFilter = catchAsync(async(req: Request, res: Response, ne
 /**
  * Delete one filter by unique id
  */
-export const deleteFilter = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+export const deleteFilter = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter} = req.params;
 
     // Validations
@@ -138,7 +148,13 @@ export const deleteFilter = catchAsync(async(req: Request, res: Response, next: 
         return next(new AppError("ID filter empty", httpCodes.bad_request));
     }
 
-    // Delete filter
+    // 1º Check owner of item
+    const ifMyItem = await CategoriesModel.findOne({ _id: id_filter, owner: req.user._id.toString()});
+    if(!ifMyItem){
+        return next(new AppError("Action not allowed", httpCodes.forbidden));
+    }
+
+    // 2ª Delete filter
     const foundFilter = await CategoriesModel.deleteOne({ _id: id_filter });
     if(foundFilter.deletedCount !== 1){
         return next(new AppError("ID filter doesn't exist", httpCodes.not_found));
