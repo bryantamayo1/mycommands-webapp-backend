@@ -125,7 +125,6 @@ export const searchCommandsGeneral = catchAsync(async(req: any, res: Response, n
  */
 export const createCommand = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter} = req.params;
-
     // Validations
     if(bodyIsEmpty(req.body)){
         return next(new AppError("Body is empty", httpCodes.bad_request));
@@ -172,7 +171,20 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
         return next(new AppError("Filter not found", httpCodes.not_found));
     }
 
-    // 2) Find command and update
+    // 2) Check owner of item
+    const ifMyItem = await CategoriesModel.findOne({
+        'commands': {
+            $elemMatch: {
+                _id: id_command,
+                owner: req.user._id.toString()
+            }
+        }
+    });
+    if(!ifMyItem){
+        return next(new AppError("Action not allowed", httpCodes.forbidden));
+    }
+
+    // 3) Find command and update
     const modifiedCategory = await CategoriesModel.findOneAndUpdate({
         id_filter,
         'commands._id': id_command
@@ -200,13 +212,27 @@ export const createCommand = catchAsync(async(req: any, res: Response, next: Nex
  /**
  * Delete command by id_filter and id_command
  */
-export const deleteCommand = catchAsync(async(req: Request, res: Response, next: NextFunction) => {
+export const deleteCommand = catchAsync(async(req: any, res: Response, next: NextFunction) => {
     const {id_filter, id_command} = req.params;
     // Validations
     if(!id_filter && !id_command){
         return next(new AppError("id_filter and id_command don't exist. F1", httpCodes.bad_request));   
     }else{
-        // 1º Finc category
+
+        // 1) Check owner of item
+        const ifMyItem = await CategoriesModel.findOne({
+            'commands': {
+                $elemMatch: {
+                    _id: id_command,
+                    owner: req.user._id.toString()
+                }
+            }
+        });
+        if(!ifMyItem){
+            return next(new AppError("Action not allowed", httpCodes.forbidden));
+        }
+
+        // 2º Find category
         const found = await CategoriesModel.findById(id_filter);
         if(!found){
             return next(new AppError("id_filter and id_command don't exist. F2", httpCodes.bad_request));   
@@ -221,7 +247,7 @@ export const deleteCommand = catchAsync(async(req: Request, res: Response, next:
                 }    
             }
         );
-        
+
         return res.json({
             status: "success",
             data: null
@@ -428,7 +454,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                     language: element.language,
                     [lang]: element[lang],
                     categoryFather: element.categoryFather,
-                    _id: element._id
+                    _id: element._id,
+                    owner: element.owner
                 });  
             }else{
                 result.push({ 
@@ -440,7 +467,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                     en: element["en"],
                     es: element["es"],
                     categoryFather: element.categoryFather,
-                    _id: element._id
+                    _id: element._id,
+                    owner: element.owner
                 });  
 
             }
@@ -458,7 +486,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 language: element.language,
                 [lang]: element[lang],
                 categoryFather: element.categoryFather,
-                _id: element._id
+                _id: element._id,
+                owner: element.owner
             });
         }else{
             result.push({ 
@@ -470,7 +499,8 @@ const foundSubCategory = async(result: any, element: any, lang: string, subcateg
                 en: element["en"],
                 es: element["es"],
                 categoryFather: element.categoryFather,
-                _id: element._id
+                _id: element._id,
+                owner: element.owner
             });
         }
         return result;  

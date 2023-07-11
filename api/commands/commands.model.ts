@@ -34,7 +34,7 @@ export const CommandsSchema = new Schema({
     owner: {
         type: String,
         required: true,
-        select: false
+        select: true
     }
 }, {
     timestamps: true

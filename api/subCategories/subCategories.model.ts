@@ -17,7 +17,7 @@ export const SubCategoriesSchema = new Schema({
     owner: {
         type: String,
         required: true,
-        select: false
+        select: true
     },
     color: {
         type: String,
