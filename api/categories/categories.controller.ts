@@ -240,7 +240,7 @@ export const deleteCommand = catchAsync(async(req: any, res: Response, next: Nex
         if(found.commands.length === 0 || !found.commands.find(item => item._id?.toString() === id_command)){
             return next(new AppError("id_filter and id_command don't exist. F3", httpCodes.bad_request));   
         }
-        await CategoriesModel.updateMany({ _id: id_filter},
+        await CategoriesModel.updateOne({ _id: id_filter},
             {
                 $pull: {
                     commands: {_id: id_command}
