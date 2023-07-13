@@ -334,13 +334,14 @@ const getCommandsWithSubCategoriesById = async(
     // Pagination
     const newResult = result.slice( (newPage - 1) * limitPage, (newPage - 1) * limitPage + limitPage );
     let pages = 1;
+
     // Parse info in case doesn’t exist results
     if(!newResult.length){
         newPage = 0;
         total = 0;
     }else{
         total = result.length;
-        pages = Math.round(total / limitPage);
+        pages = Math.ceil(total / limitPage);
     }
 
     return res.json({
@@ -422,7 +423,7 @@ const getCommandsWithSubCategoriesByAllCategories = async(
         total = 0;
     }else{
         total = result.length;
-        pages = Math.round(total / limitPage);
+        pages = Math.ceil(total / limitPage);
     }
 
     return res.json({
