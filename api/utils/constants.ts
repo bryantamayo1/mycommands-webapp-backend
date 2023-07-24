@@ -12,13 +12,14 @@ export const httpCodes = Object.freeze({
 })
 
 export const languages = Object.freeze([
-    'js',
-    'git',
-    'sql',
-    'jsx',
-    'tsx',
-    'css',
     'bash',
+    'css',
+    'git',
+    'js',
+    'jsx',
+    'php',
+    'sql',
+    'tsx',
 ]);
 
 export enum userRoles{
