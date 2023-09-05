@@ -1,0 +1,1 @@
+{"version":3,"file":"infoPage.model.js","sourceRoot":"","sources":["../../../api/infoPage/infoPage.model.ts"],"names":[],"mappings":";;;AAAA,uCAAyC;AAEzC;;;;;;;;;GASG;AACH,MAAM,cAAc,GAAG,IAAI,iBAAM,CAAC;IAC9B,GAAG,EAAE,iBAAM,CAAC,KAAK,CAAC,KAAK;CAC1B,EAAE;IACC,MAAM,EAAE,KAAK;CAChB,CAAC,CAAC;AAEH,MAAM,aAAa,GAAG,IAAA,gBAAK,EAAC,WAAW,EAAE,cAAc,CAAC,CAAC;AACjD,sCAAa"}
