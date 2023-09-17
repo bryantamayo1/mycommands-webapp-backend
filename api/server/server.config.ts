@@ -61,7 +61,8 @@ export class Server{
         this.app.use(ExpressMongoSanitize());
 
         // Data sanitization against XSS
-        this.app.use(xss());
+        // TODO: Analyze 17-09-2023  ...
+        // this.app.use(xss());
 
         // Morgan
         if(process.env.NODE_ENV === 'development') this.app.use(morgan("dev"));
