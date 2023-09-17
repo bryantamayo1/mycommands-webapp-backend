@@ -65,4 +65,5 @@ export const colorsEnum = [
 export const errorMessages = Object.freeze({
     500: "more 500 characters aren’t allowed",
     100: "more 100 characters aren’t allowed",
+    10000: "more 10000 characters aren’t allowed",
 });

@@ -5,7 +5,7 @@ export const CommandsSchema = new Schema({
     command: {
         type: String,
         required: [true, "command is compulsory"],
-        maxLength: [500, errorMessages[500]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
         trim: true
     },
     language: {
@@ -16,13 +16,13 @@ export const CommandsSchema = new Schema({
     en: {
         type: String,
         required: [true, "en is compulsory"],
-        maxLength: [500, errorMessages[500]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
         trim: true
     },
     es: {
         type: String,
         required: [true, "es is compulsory"],
-        maxLength: [500, errorMessages[500]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
         trim: true
     },
     subCategories: [

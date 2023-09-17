@@ -6,13 +6,13 @@ export const SubCategoriesSchema = new Schema({
         type: String,
         required: [true, "en is compulsory"],
         trim: true,
-        maxLength: [100, errorMessages[100]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
     },
     es: {
         type: String,
         required: [true, "es is compulsory"],
         trim: true,
-        maxLength: [100, errorMessages[100]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
     },
     owner: {
         type: String,
@@ -23,7 +23,7 @@ export const SubCategoriesSchema = new Schema({
         type: String,
         enum: colorsEnum,
         required: true,
-        maxLength: [100, errorMessages[100]],     // Including 500 characters
+        maxLength: [10000, errorMessages[10000]],     // Including 10000 characters
     }
 }, {
     timestamps: true

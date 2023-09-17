@@ -6,13 +6,13 @@ const CategoriesSchema = new Schema({
     category: {
         type: String,
         required: [true, "category is compulsory"],
-        maxLength: [100, errorMessages[100]],     // Including 500 characters
+        maxLength: [100, errorMessages[100]],     // Including 100 characters
         trim: true
     },
     version: {
         type: String,
         required: [true, "version is compulsory"],
-        maxLength: [100, errorMessages[100]],     // Including 500 characters
+        maxLength: [100, errorMessages[100]],     // Including 100 characters
         trim: true
     },
     commands: {
