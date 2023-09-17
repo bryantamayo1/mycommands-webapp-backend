@@ -11,8 +11,32 @@ export const httpCodes = Object.freeze({
     internal_server_error: 500
 })
 
+/**
+ * Library prism.js with mode tomorrow night
+ * Selected:
+ *  Minified version
+ *  Tomorrow Night
+ *  Markup + HTML + XML + SVG + MathML + SSML + Atom + RSS
+ *  CSS
+ *  C-like
+ *  Javascript
+ *  Bash + Shell + Shell
+ *  C
+ *  CSS Extras
+ *  Git
+ *  ignore + .gitignore + .hgignore + .npmignore
+ *  Javadoc
+ *  JS Extras
+ *  Markup templating
+ *  PHP
+ *  React JSX
+ *  React TSX
+ *  SQL
+ *  TypeScript
+ */
 export const languages = Object.freeze([
     'bash',
+    'c',
     'css',
     'git',
     'js',
